@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:web_ui/watcher.dart';
 import 'client.dart';
 import 'lib/core.dart';
+import 'reset-timer.dart';
 
 const TIMEOUT = const Duration(seconds: 1);
 
@@ -84,23 +85,4 @@ foo() {
             "foo bar baz",
             null))).then((dabble) { print(dabble.id);});
   });
-}
-
-class ResetTimer {
-  Timer _timer;
-  Function _callback;
-  Duration _timeout;
-
-  ResetTimer(Duration timeout, void callback()) {
-    _callback = callback;
-    _timeout = timeout;
-    reset();
-  }
-
-  void reset() {
-    if(_timer != null)
-      _timer.cancel();
-
-    _timer = new Timer(_timeout, _callback);
-  }
 }
