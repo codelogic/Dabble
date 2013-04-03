@@ -9,5 +9,7 @@ class Renderer {
         + "<script type=\"text/javascript\">"
         + code.rawText
         + "</script></body>";
+
+    return result;
   }
 }

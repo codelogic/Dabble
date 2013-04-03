@@ -10,14 +10,19 @@ void main() {
 }
 
 void save() {
+  var data = compileDabbleData();
   // For now, just print the description to the console.
-  print(compileDabbleData().description);
+  print(data.description);
+  var render = new Renderer();
+  String result = render.render(markup: data.markup, style: data.style, code: data.code);
+
+  (query("#render-area") as IFrameElement).srcdoc = result;
 }
 
 DabbleData compileDabbleData() {
   String name = (query("#d-name") as InputElement).value;
   String description = (query("#d-description") as TextAreaElement).value;
-  
+
   DabbleData data = new DabbleData(
       name,
       description,
@@ -25,7 +30,7 @@ DabbleData compileDabbleData() {
       markupLanguageData(),
       styleLanguageData(),
       appLanguageData());
-  
+
   return data;
 }
 
