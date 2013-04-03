@@ -17,8 +17,10 @@ String description = "";
 
 ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
+DabbleApi api = new DabbleApiImpl();
+ADabble currentDabble = null;
+
 void main() {
-  foo();
   query("#save")
     .onClick.listen((_) => save());
 
@@ -27,25 +29,45 @@ void main() {
   watch(() => jsInput, (_) => saveTimer.reset());
 }
 
-void save() {
-  var data = compileDabbleData();
-  // For now, just print the description to the console.
-  print(data.description);
+Future<ADabble> createNewDabble() {
+  return api.createNewDabble();
+}
+
+void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
+    api.insertNewVersion(dabble.id, newData);
+
+    // TODO: move this to occur on an api event.
+    renderData(newData);
+}
+
+void renderData(DabbleData data) {
   var render = new Renderer();
   String result = render.render(markup: data.markup, style: data.style, code: data.code);
 
   (query("#render-area") as IFrameElement).srcdoc = result;
 }
 
+void save() {
+  var data = compileDabbleData();
+
+  if (currentDabble == null) {
+    createNewDabble()
+      .then((dabble) => updatedDabbleWithData(dabble, data));
+  } else {
+    updatedDabbleWithData(currentDabble, data);
+  }
+}
 
 DabbleData compileDabbleData() {
   String name = (query("#d-name") as InputElement).value;
   String description = (query("#d-description") as TextAreaElement).value;
 
+  DabbleData previous = currentDabble == null ? null : currentDabble.current;
+
   DabbleData data = new DabbleData(
       name,
       description,
-      null,
+      previous,
       markupLanguageData(),
       styleLanguageData(),
       appLanguageData());
@@ -67,22 +89,3 @@ LanguageData appLanguageData() => new LanguageData(
       "js",
       jsInput,
       {});
-
-foo() {
-  DabbleApi api = new DabbleApiImpl();
-  api.createNewDabble().then((dabble) {
-    print(dabble.id);
-    api.insertNewVersion(dabble.id, new DabbleData("Dabble test",
-        "test desc",
-        null,
-        new LanguageData("html",
-        "<div/>",
-        null),
-        new LanguageData("css",
-            ".foo { color: #fff; }",
-            null),
-        new LanguageData("js",
-            "foo bar baz",
-            null))).then((dabble) { print(dabble.id);});
-  });
-}
