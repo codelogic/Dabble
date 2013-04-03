@@ -11,12 +11,12 @@ class DabbleData {
   
   final LanguageData markup;
   final LanguageData style;
-  final LanguageData applicationCode;
+  final LanguageData code;
   
   DabbleData(String this.name,
       String this.description,
       DabbleData this.parent,
       LanguageData this.markup,
       LanguageData this.style,
-      LanguageData this.applicationCode);
+      LanguageData this.code);
 }
