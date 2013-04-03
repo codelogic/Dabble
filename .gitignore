@@ -1,2 +1,7 @@
 packages/
 client/out/
+<<<<<<< HEAD
+=======
+.DS_store
+.buildlog
+>>>>>>> Adding a .gitignore and documenting api
