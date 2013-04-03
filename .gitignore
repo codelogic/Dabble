@@ -1,9 +1,6 @@
 packages/
 client/out/
-<<<<<<< HEAD
-=======
+server/web/out/
 .DS_store
 .buildlog
->>>>>>> Adding a .gitignore and documenting api
-
 pubspec.lock
