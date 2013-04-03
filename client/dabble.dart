@@ -1,13 +1,25 @@
 library dabble.client.dabble;
 
 import 'dart:html';
+import 'dart:async';
+import 'package:web_ui/watcher.dart';
 import 'client.dart';
 import 'package:dabble/core.dart';
+
+const TIMEOUT = const Duration(seconds: 1);
+
+String htmlInput = "";
+String cssInput = "";
+String jsInput = "";
+
+ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
 void main() {
   foo();
   query("#save")
     .onClick.listen((_) => save());
+
+  watch(() => htmlInput, (_) => saveTimer.reset());
 }
 
 void save() {
@@ -19,9 +31,7 @@ void save() {
 
   (query("#render-area") as IFrameElement).srcdoc = result;
 }
-String htmlInput = "";
-String cssInput = "";
-String jsInput = "";
+
 
 DabbleData compileDabbleData() {
   String name = (query("#d-name") as InputElement).value;
@@ -70,4 +80,23 @@ foo() {
             "foo bar baz",
             null))).then((dabble) { print(dabble.id);});
   });
+}
+
+class ResetTimer {
+  Timer _timer;
+  Function _callback;
+  Duration _timeout;
+
+  ResetTimer(Duration timeout, void callback()) {
+    _callback = callback;
+    _timeout = timeout;
+    reset();
+  }
+
+  void reset() {
+    if(_timer != null)
+      _timer.cancel();
+
+    _timer = new Timer(_timeout, _callback);
+  }
 }
