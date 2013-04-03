@@ -5,6 +5,7 @@ import 'client.dart';
 import 'package:dabble/core.dart';
 
 void main() {
+  foo();
   query("#save")
     .onClick.listen((_) => save());
 }
