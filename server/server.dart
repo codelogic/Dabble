@@ -9,11 +9,11 @@ void main() {
     .then((HttpServer server) {
       print('listening for connections on $port');
       
-      var ch = new ChatHandler();
+      var wsh = new WebSocketHandler();
       var sc = new StreamController();
       sc.stream
         .transform(new WebSocketTransformer())
-        .listen(ch.onConnection);
+        .listen(wsh.onConnection);
 
       server.listen((HttpRequest request) {
         if (request.uri.path == '/ws') {
@@ -26,7 +26,7 @@ void main() {
     onError: (error) => print("Error starting HTTP server: $error"));
 }
 
-class ChatHandler {
+class WebSocketHandler {
   Set<WebSocket> connections;
   onConnection(WebSocket conn) {
     void onMessage(message) {
