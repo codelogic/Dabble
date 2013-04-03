@@ -5,12 +5,17 @@ import 'package:dabble/core.dart';
 
 void main() {
   query("#save")
-    .onClick.listen((_) => print(compileData().description));
+    .onClick.listen((_) => save());
 
 
 }
 
-DabbleData compileData() {
+void save() {
+  // For now, just print the description to the console.
+  print(compileDabbleData().description);
+}
+
+DabbleData compileDabbleData() {
   String name = (query("#d-name") as InputElement).value;
   String description = (query("#d-description") as TextAreaElement).value;
   
@@ -18,24 +23,24 @@ DabbleData compileData() {
       name,
       description,
       null,
-      markupLanguageBlob(),
-      styleLanguageBlob(),
-      appLanguageBlob());
+      markupLanguageData(),
+      styleLanguageData(),
+      appLanguageData());
   
   return data;
 }
 
-LanguageData markupLanguageBlob() => new LanguageData(
+LanguageData markupLanguageData() => new LanguageData(
       "html",
-      query("#htmlinput").value,
+      (query("#htmlinput") as TextAreaElement).value,
       {});
 
-LanguageData styleLanguageBlob() => new LanguageData(
+LanguageData styleLanguageData() => new LanguageData(
       "css",
-      query("#cssinput").value,
+      (query("#cssinput") as TextAreaElement).value,
       {});
 
-LanguageData appLanguageBlob() => new LanguageData(
+LanguageData appLanguageData() => new LanguageData(
       "js",
-      query("#jsinput").value,
+      (query("#jsinput") as TextAreaElement).value,
       {});
