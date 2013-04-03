@@ -4,11 +4,11 @@ import "package:stream/stream.dart";
 
 void main() {
   var map = {
-     //'/style/(path:.*)': '/out/style/(path)',
+     '/style/(path:.*)': '/out/style/(path)',
      '/': '/out/index.html',
      '/dabble.dart': '/out/dabble.dart',
-     '/dabble.dart.map': '/out/dabble.dart.map',
      '/index.html_bootstrap.dart': '/out/index.html_bootstrap.dart',
+     '/dabble.dart.map': '/out/dabble.dart.map',
   };
   new StreamServer(uriMapping: map).start();
 }
