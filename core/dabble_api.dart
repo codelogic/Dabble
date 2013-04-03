@@ -10,6 +10,6 @@ abstract class DabbleApi {
   /* update a dabble instance itself */
   Future insertNewVersion(String dabbleId, DabbleData newData);
   
-  /* when a particular dable is updated */
-  Stream onUpdate(String dabblId);
+  /* when a particular dabble is updated */
+  Stream<DabbleData> onUpdate(String dabbleId);
 }
