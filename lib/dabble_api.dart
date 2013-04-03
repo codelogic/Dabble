@@ -4,6 +4,9 @@ abstract class DabbleApi {
   /* create a persistant dabble instance populated with an id */
   Future<ADabble> createNewDabble({owner: 'anonymous'});
   
+  /** Gets a dabble by id. */
+  Future<ADabble> getDabble(String dabbleId);
+
   /* delete a dabble by passing in the id */
   Future deleteDabble(String dabbleId);
   
