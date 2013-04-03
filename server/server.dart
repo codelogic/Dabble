@@ -17,7 +17,11 @@ void main() {
 
       server.listen((HttpRequest request) {
         if (request.uri.path == '/ws') {
-          sc.add(request);
+          /* sc.add(request); */
+          String text = createHtmlResponse();
+          request.response.headers.set(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
+          request.response.write(text);
+          request.response.close();
         } else {
           /* ... */
         }
@@ -46,4 +50,22 @@ class WebSocketHandler {
       onError: (e) => connections.remove(conn)
     );
   }
+}
+
+String createHtmlResponse() {
+  return
+'''
+<html>
+  <style>
+    body { background-color: teal; }
+    p { background-color: white; border-radius: 8px;
+        border:solid 1px #555; text-align: center; padding: 0.5em;
+        font-family: "Lucida Grande", Tahoma; font-size: 18px; color: #555; }
+  </style>
+  <body>
+    <br/><br/>
+    <p>Current time: ${new DateTime.now()}</p>
+  </body>
+</html>
+''';
 }
