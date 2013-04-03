@@ -4,14 +4,28 @@
   <head>
     <meta charset="utf-8">
     <title>Dabble</title>
-    <link rel="stylesheet" href="dabble.css">
+    <link rel="stylesheet" href="style/normalize-2.1.0.css">
+    <link rel="stylesheet" href="style/dabble.css">
   </head>
   <body>
     <h1>Dabble</h1>
     
     <p>Hello world from Dart!</p>
     
-    <input type="text"
+    <p>Html</p>
+    <textarea id="htmlinput"></textarea>
+    
+    <p>Css</p>
+    <textarea id="cssinput"></textarea>
+    
+    <p>Javascript</p>
+    <textarea  id="jsinput"></textarea>
+    
+    <p><button id="go-render">Render everything now</button>
+    <button id="save">Save Stuff</button></p>
+    
+    <p>Render area</p>
+    <div id="render-area"></div>
     
     <script type="application/dart" src="dabble.dart"></script>
     <script src="packages/browser/dart.js"></script>
