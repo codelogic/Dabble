@@ -7,7 +7,7 @@ import 'dart:json' as JSON;
 import 'dart:math' as math;
 import 'dart:web_sql';
 
-import 'package:dabble/core.dart';
+import 'lib/core.dart';
 import 'package:serialization/serialization.dart';
 import 'package:lawndart/lawndart.dart';
 import 'package:meta/meta.dart'; 
