@@ -11,6 +11,8 @@ const TIMEOUT = const Duration(seconds: 1);
 String htmlInput = "";
 String cssInput = "";
 String jsInput = "";
+String title = "";
+String description = "";
 
 ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
@@ -20,6 +22,8 @@ void main() {
     .onClick.listen((_) => save());
 
   watch(() => htmlInput, (_) => saveTimer.reset());
+  watch(() => cssInput, (_) => saveTimer.reset());
+  watch(() => jsInput, (_) => saveTimer.reset());
 }
 
 void save() {
