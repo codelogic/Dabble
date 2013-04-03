@@ -3,4 +3,5 @@ version: 0.0.1
 description: A sample web application
 dependencies:
   lawndart: any
+  serialization: any
   browser: any

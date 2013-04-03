@@ -1,6 +1,7 @@
 library dabble.client.dabble;
 
 import 'dart:html';
+import 'client.dart';
 import 'package:dabble/core.dart';
 
 void main() {
@@ -42,3 +43,22 @@ LanguageData appLanguageData() => new LanguageData(
       "js",
       (query("#jsinput") as TextAreaElement).value,
       {});
+
+foo() {
+  DabbleApi api = new DabbleApiImpl();
+  api.createNewDabble().then((dabble) {
+    print(dabble.id);
+    api.insertNewVersion(dabble.id, new DabbleData("Dabble test",
+        "test desc",
+        null,
+        new LanguageData("html",
+        "<div/>",
+        null),
+        new LanguageData("css",
+            ".foo { color: #fff; }",
+            null),
+        new LanguageData("js",
+            "foo bar baz",
+            null))).then((dabble) { print(dabble.id);});
+  });
+}

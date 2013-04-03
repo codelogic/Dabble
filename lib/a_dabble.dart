@@ -8,4 +8,6 @@ class ADabble {
   DabbleData current;
   
   ADabble(String this.id, String this.owner);
+
+  ADabble.forSerialization(String this.id, String this.owner);
 }
