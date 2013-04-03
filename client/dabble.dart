@@ -1,12 +1,8 @@
-part of dabble.client;
+library dabble.dabble;
+
+import 'dart:html';
 
 void main() {
   query("#save")
-    .onClick
-    .listen((event) => Window.alert("WIN!"));
-  
-  var subscription = query("#save").onClick.listen(
-      (event) => print('click!'));
-
-  subscription.cancel();
+    .onClick.listen((_) => print("hello"));
 }
