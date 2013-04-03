@@ -14,6 +14,9 @@ void save() {
   // For now, just print the description to the console.
   print(compileDabbleData().description);
 }
+String htmlInput = "";
+String cssInput = "";
+String jsInput = "";
 
 DabbleData compileDabbleData() {
   String name = (query("#d-name") as InputElement).value;
@@ -32,15 +35,15 @@ DabbleData compileDabbleData() {
 
 LanguageData markupLanguageData() => new LanguageData(
       "html",
-      (query("#htmlinput") as TextAreaElement).value,
+      htmlInput,
       {});
 
 LanguageData styleLanguageData() => new LanguageData(
       "css",
-      (query("#cssinput") as TextAreaElement).value,
+      cssInput,
       {});
 
 LanguageData appLanguageData() => new LanguageData(
       "js",
-      (query("#jsinput") as TextAreaElement).value,
+      jsInput,
       {});
