@@ -9,14 +9,14 @@ class DabbleData {
   final String description;
   final DabbleData parent;
   
-  final LanguageBlob markup;
-  final LanguageBlob style;
-  final LanguageBlob applicationCode;
+  final LanguageData markup;
+  final LanguageData style;
+  final LanguageData applicationCode;
   
   DabbleData(String this.name,
       String this.description,
       DabbleData this.parent,
-      LanguageBlob this.markup,
-      LanguageBlob this.style,
-      LanguageBlob this.applicationCode);
+      LanguageData this.markup,
+      LanguageData this.style,
+      LanguageData this.applicationCode);
 }
