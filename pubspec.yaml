@@ -1,4 +1,5 @@
-name: Dabble
+name: dabble
+version: 0.0.1
 description: A sample web application
 dependencies:
   lawndart: any
