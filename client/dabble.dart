@@ -1,5 +1,4 @@
-import 'dart:html';
-import 'dabble:core';
+part of dabble.client;
 
 void main() {
   query("#sample_text_id")
