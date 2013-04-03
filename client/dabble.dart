@@ -1,38 +1,41 @@
-library dabble.dabble;
+library dabble.client.dabble;
 
 import 'dart:html';
 import 'package:dabble/core.dart';
 
 void main() {
   query("#save")
-    .onClick.listen((_) => compileData.description);
+    .onClick.listen((_) => print(compileData().description));
+
+
 }
 
 DabbleData compileData() {
-  String name = query("#d-name").text;
-  String description = query("#d-description").text;
+  String name = (query("#d-name") as InputElement).value;
+  String description = (query("#d-description") as TextAreaElement).value;
   
   DabbleData data = new DabbleData(
-      name: name,
-      description: description,
-      markup: markupLanguageBlob(),
-      style: styleLanguageBlob(),
-      applicationCode: appLanguageBlob());
+      name,
+      description,
+      null,
+      markupLanguageBlob(),
+      styleLanguageBlob(),
+      appLanguageBlob());
   
   return data;
 }
 
 LanguageData markupLanguageBlob() => new LanguageData(
-      language: "html",
-      rawText: query("#htmlinput").value,
-      options: {});
+      "html",
+      query("#htmlinput").value,
+      {});
 
 LanguageData styleLanguageBlob() => new LanguageData(
-      language: "css",
-      rawText: query("#cssinput").value,
-      options: {});
+      "css",
+      query("#cssinput").value,
+      {});
 
 LanguageData appLanguageBlob() => new LanguageData(
-      language: "js",
-      rawText: query("#jsinput").value,
-      options: {});
+      "js",
+      query("#jsinput").value,
+      {});
