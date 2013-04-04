@@ -38,7 +38,16 @@ void main() {
 }
 
 Future<ADabble> createNewDabble() {
-  return localApi.createNewDabble().then((dabble) => currentDabble = dabble);
+  return localApi.createNewDabble()
+      .then((dabble) => currentDabble = dabble)
+      .then(registerListener);
+}
+
+ADabble registerListener(ADabble dabble) {
+  if (dabble != null) {
+    localApi.onUpdate(dabble.id).listen(renderData);
+  }
+  return dabble;
 }
 
 void tryLoadPreviouslySavedDabble() {
@@ -46,7 +55,11 @@ void tryLoadPreviouslySavedDabble() {
     .then((id) {
       if(id != null && id != "") {
         localApi.getDabble(id)
-          .then((dabble) => currentDabble = dabble)
+          .then((dabble) {
+            currentDabble = dabble;
+            return dabble;
+          })
+          .then(registerListener)
           .then((dabble) => populateEditorsWithLoadedData(dabble.current));
       }
 
@@ -55,17 +68,19 @@ void tryLoadPreviouslySavedDabble() {
 }
 
 void populateEditorsWithLoadedData(DabbleData data) {
-  print("Populating data");
-  print("name: " + data.name);
-  print("description: " + data.description);
-  print("name: " + data.markup.rawText);
-  print("markup: " + data.style.rawText);
-  print("code: " + data.code.rawText);
-  title = data.name;
-  description = data.description;
-  htmlInput = data.markup.rawText;
-  cssInput = data.style.rawText;
-  jsInput = data.code.rawText;
+  if (data != null) {
+    print("Populating data");
+    print("name: " + data.name);
+    print("description: " + data.description);
+    print("name: " + data.markup.rawText);
+    print("markup: " + data.style.rawText);
+    print("code: " + data.code.rawText);
+    title = data.name;
+    description = data.description;
+    htmlInput = data.markup.rawText;
+    cssInput = data.style.rawText;
+    jsInput = data.code.rawText;
+  }
 }
 
 void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
@@ -73,12 +88,10 @@ void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
   dabble.current = newData;
 
   query("#status").text = "http://localhost:8080/anon/${dabble.id}";
-
-  // TODO: move this to occur on an api event.
-  renderData(newData);
 }
 
 void renderData(DabbleData data) {
+  print("let's render!");
   var render = new Renderer();
   String result = render.render(markup: data.markup, style: data.style, code: data.code);
 
