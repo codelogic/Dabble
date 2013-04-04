@@ -90,8 +90,8 @@ void populateEditorsWithLoadedData(DabbleData data) {
 void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
   localApi.insertNewVersion(dabble.id, newData);
   dabble.current = newData;
-
-  query("#status").text = "http://localhost:8080/anon/${dabble.id}";
+  String host = window.location.host;
+  query("#status").text = "http://$host/view/${dabble.id}";
 }
 
 void renderData(DabbleData data) {

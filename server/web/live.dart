@@ -36,12 +36,14 @@ void tryLoadPreviouslySavedDabble(String id) {
         currentDabble = dabble;
         return dabble;
       })
-      .then(registerListener);
+      .then(registerListener)
+      .then((dabble) => renderData(dabble.current));
   }
 }
 
 void renderData(DabbleData data) {
   print("let's render!");
+  query('#name').text = data.name;
   var render = new Renderer();
   String result = render.render(markup: data.markup, style: data.style, code: data.code);
 

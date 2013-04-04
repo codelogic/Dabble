@@ -29,9 +29,17 @@ void ws(HttpConnect connect) {
   String id = connect.dataset['id'];
   WebSocketTransformer.upgrade(connect.request).then((WebSocket websocket) {
     print("Got websocket connection!");
-    getStream(id).stream.listen((DabbleData data) {
-      websocket.send(data.serialize());
+    var sub = getStream(id).stream.listen((DabbleData data) {
+      try {
+        websocket.send(data.serialize());
+      } catch(e) {
+        print("socket error.");
+        sub.cancel();
+      }
     });
+    StreamSubscription wsSub = websocket.listen((_) {});
+    wsSub..onDone(() {sub.cancel();})
+         ..onError((_) {sub.cancel();});
   });
 }
 

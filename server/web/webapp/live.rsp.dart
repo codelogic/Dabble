@@ -26,7 +26,7 @@ String id = connect.dataset['id'];
     <link href="theme.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>"""); //#10
+    <h1 id='name'>"""); //#10
 
   response.write(nnstr(dabble.current.name)); //#14
 
