@@ -20,29 +20,23 @@
       <h2 class="title">Dabble</h2>
     </div>
 
+    <button on-click="clear()">Clear</button>
+    <button on-click="save()">Save</button>
+
     <p id="status">Hello world from Dart!</p>
 
     <input id="d-name" bind-value="title" placeholder="name...">
     <textarea id="d-description" bind-value="description" placeholder="Enter a description..."></textarea>
 
     <p>Html</p>
-    <div is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/html" editorvalue="test"></div>
+    <x-dabble-editor id="markupEditor" editorstyle="{{'editor'}}" mode="ace/mode/html"></x-dabble-editor>
 
     <p>Css</p>
-    <div is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/css" editorvalue="test"></div>
+    <x-dabble-editor id="styleEditor" editorstyle="{{'editor'}}" mode="ace/mode/css"></x-dabble-editor>
 
     <p>Javascript</p>
-    <div is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/javascript" editorvalue="test"></div>
+    <x-dabble-editor id="codeEditor" editorstyle="{{'editor'}}" mode="ace/mode/javascript"></x-dabble-editor>
 
-    <p><button id="render">Render everything now</button>
-    <button id="save">Save Stuff</button></p>
-
-    <p>Render area</p>
-    <iframe id="render-area"></iframe>    
-    
-    <p><button id="render">Render everything now</button>
-    <button id="save" on-click="save()">Save Stuff</button></p>
-    
     <p>Render area</p>
     <iframe id="render-area"></iframe>
     

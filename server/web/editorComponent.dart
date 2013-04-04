@@ -6,7 +6,7 @@ class EditorComponent extends WebComponent {
   String _editorValue = "";
   String editorstyle;
   String mode = "ace/mode/javascript";
-  String theme = "ace/theme/monokai";
+  String theme = "ace/theme/GitHub";
   StreamController<String> valueStreamController = new StreamController.broadcast();
 
   var editor;
@@ -33,6 +33,9 @@ class EditorComponent extends WebComponent {
   }
 
   set editorvalue(String value) {
+    js.scoped(() {
+      editor.getSession().setValue(value);
+    });
     _editorValue = value;
   }
 

@@ -8,15 +8,10 @@ import 'client.dart';
 import 'lib/core.dart';
 import 'package:js/js.dart' as js;
 import 'reset-timer.dart';
+import 'editorComponent.dart';
 
 const TIMEOUT = const Duration(seconds: 1);
 
-@observable
-String htmlInput = "";
-@observable
-String cssInput = "";
-@observable
-String jsInput = "";
 @observable
 String title = "";
 @observable
@@ -27,21 +22,36 @@ ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 LocalDabbleApi localApi = new LocalDabbleApi();
 ADabble currentDabble = null;
 
+EditorComponent markupEditor;
+EditorComponent styleEditor;
+EditorComponent codeEditor;
+
 void main() {
-  query("#save")
-    .onClick.listen((_) => save());
+  Timer.run(() => deferedMain());
+}
+
+void deferedMain() {
+  markupEditor = (query("#markupEditor").xtag as EditorComponent);
+  styleEditor = (query("#styleEditor").xtag as EditorComponent);
+  codeEditor = (query("#codeEditor").xtag as EditorComponent);
 
   tryLoadPreviouslySavedDabble();
 
-  watch(() => htmlInput, (_) => saveTimer.reset());
-  watch(() => cssInput, (_) => saveTimer.reset());
-  watch(() => jsInput, (_) => saveTimer.reset());
   watch(() => title, (_) => saveTimer.reset());
   watch(() => description, (_) => saveTimer.reset());
 }
 
 Future<ADabble> createNewDabble() {
-  return localApi.createNewDabble().then((dabble) => currentDabble = dabble);
+  return localApi.createNewDabble()
+      .then((dabble) => currentDabble = dabble)
+      .then(registerListener);
+}
+
+ADabble registerListener(ADabble dabble) {
+  if (dabble != null) {
+    localApi.onUpdate(dabble.id).listen(renderData);
+  }
+  return dabble;
 }
 
 void tryLoadPreviouslySavedDabble() {
@@ -49,7 +59,11 @@ void tryLoadPreviouslySavedDabble() {
     .then((id) {
       if(id != null && id != "") {
         localApi.getDabble(id)
-          .then((dabble) => currentDabble = dabble)
+          .then((dabble) {
+            currentDabble = dabble;
+            return dabble;
+          })
+          .then(registerListener)
           .then((dabble) => populateEditorsWithLoadedData(dabble.current));
       }
 
@@ -58,33 +72,38 @@ void tryLoadPreviouslySavedDabble() {
 }
 
 void populateEditorsWithLoadedData(DabbleData data) {
-  print("Populating data");
-  print("name: " + data.name);
-  print("description: " + data.description);
-  print("name: " + data.markup.rawText);
-  print("markup: " + data.style.rawText);
-  print("code: " + data.code.rawText);
-  title = data.name;
-  description = data.description;
-  htmlInput = data.markup.rawText;
-  cssInput = data.style.rawText;
-  jsInput = data.code.rawText;
+  if (data != null) {
+    print("Populating data");
+    print("name: " + data.name);
+    print("description: " + data.description);
+    print("name: " + data.markup.rawText);
+    print("markup: " + data.style.rawText);
+    print("code: " + data.code.rawText);
+    title = data.name;
+    description = data.description;
+    markupEditor.editorvalue = data.markup.rawText;
+    styleEditor.editorvalue = data.style.rawText;
+    codeEditor.editorvalue = data.code.rawText;
+  }
 }
 
 void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
   localApi.insertNewVersion(dabble.id, newData);
+  dabble.current = newData;
 
   query("#status").text = "http://localhost:8080/anon/${dabble.id}";
-
-  // TODO: move this to occur on an api event.
-  renderData(newData);
 }
 
 void renderData(DabbleData data) {
+  print("let's render!");
   var render = new Renderer();
   String result = render.render(markup: data.markup, style: data.style, code: data.code);
 
   (query("#render-area") as IFrameElement).srcdoc = result;
+}
+
+void clearRenderer() {
+  (query("#render-area") as IFrameElement).srcdoc = "";
 }
 
 void save() {
@@ -93,6 +112,23 @@ void save() {
       .then((dabble) => updatedDabbleWithData(dabble, compileDabbleData()));
   } else {
     updatedDabbleWithData(currentDabble, compileDabbleData());
+  }
+}
+
+void clear() {
+  createNewDabble();
+  title = "";
+  description = "";
+  markupEditor.editorvalue = "";
+  styleEditor.editorvalue = "";
+  codeEditor.editorvalue = "";
+  clearRenderer();
+  print("clearing");
+}
+
+void refresh() {
+  if(currentDabble != null) {
+    renderData(currentDabble.current);
   }
 }
 
@@ -108,7 +144,7 @@ DabbleData compileDabbleData() {
       ..dabbleId = dabbleId
       ..markup = markupLanguageData()
       ..style = styleLanguageData()
-      ..code = appLanguageData();
+      ..code = codeLanguageData();
 
   return data;
 }
@@ -117,7 +153,7 @@ DabbleData compileDabbleData() {
 LanguageData markupLanguageData() {
   LanguageData data = new LanguageData()
     ..language = "html"
-    ..rawText = htmlInput
+    ..rawText = markupEditor.editorvalue
     ..options = {};
   return data;
 }
@@ -125,15 +161,15 @@ LanguageData markupLanguageData() {
 LanguageData styleLanguageData() {
   LanguageData data = new LanguageData()
     ..language = "css"
-    ..rawText = cssInput
+    ..rawText = styleEditor.editorvalue
     ..options = {};
   return data;
 }
 
-LanguageData appLanguageData() {
+LanguageData codeLanguageData() {
   LanguageData data = new LanguageData()
     ..language = "js"
-    ..rawText = jsInput
+    ..rawText = codeEditor.editorvalue
     ..options = {};
   return data;
 }
