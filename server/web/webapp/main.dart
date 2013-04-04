@@ -13,7 +13,6 @@ void main() {
      '/index.html_bootstrap.dart.js.deps': '/out/index.html_bootstrap.dart.js.deps',
      '/index.html_bootstrap.dart.js.map': '/out/index.html_bootstrap.dart.js.map',
      '/view/(file:.*)\\.(ext:.*)': forwardLive,
-     '/_i/(file:.*)\\.(ext:.*)': forwardLive,
      '/live.dart.js': '/out/live.dart.js',
      '/live.dart.js.deps': '/out/live.dart.js.deps',
      '/live.dart.js.map': '/out/live.dart.js.map',
@@ -33,7 +32,6 @@ void main() {
      '/_/(id:.*)': api,
      '/ws/(id:.*)': ws,
      '/view/(id:.*)': '/out/live.html',
-     '/_i/(id:.*)': render,
   };
 
   new StreamServer(uriMapping: map)
@@ -42,24 +40,6 @@ void main() {
 }
 
 Map<String, StreamController<DabbleData>> _map = new Map();
-
-void render(HttpConnect connect) {
-  connect.request.response.done.catchError((e) => print("Error sending response $e"));
-  var id = connect.dataset['id'];
-  var dabble = getDabble(id);
-  var data = dabble.current;
-  var render = new Renderer();
-
-  render.render(markup: data.markup, style: data.style, code: data.code).then((result) {
-    try {
-      connect.response..headers.contentType = new ContentType.fromString("text/html")
-      ..write(result);
-      connect.close();
-    } catch(e) {
-      print("socket error. Render Result.");
-    }
-  });
-}
 
 void forwardLive(HttpConnect connect) {
   connect.request.response.done.catchError((e) => print("Error sending response $e"));
@@ -151,6 +131,11 @@ ADabble getDabble(String id) {
 doUpdate(String id, String body, HttpConnect connect) {
   connect.request.response.done.catchError((e) => print("Error sending response $e"));
   DabbleData data = DabbleData.revive(body);
+  notifyUpdate(id, data);
+  finishUpdate(id, data, connect);
+}
+
+finishUpdate(String id, DabbleData data, HttpConnect connect) {
   ADabble dabble = getDabble(id);
 
   compileDart(data).then((compiledData) {
@@ -182,7 +167,8 @@ Future<DabbleData> compileDart(DabbleData data) {
 Future<String> compile(String rawText) {
   var exec = new Options().executable;
   var dir = path.dirname(exec);
-  File tmp = new File("${dir}/tmp.dart");
+  var fname = "${dir}/${makeDabbleId()}.tmp.dart";
+  File tmp = new File(fname);
   return tmp.writeAsString(rawText).then((f) {
     var p = f.path.toString();
     print(p);
@@ -192,8 +178,12 @@ Future<String> compile(String rawText) {
           .then((data) => data.join(''));
     });
   }).then((_) {
-    File out = new File("${tmp.path.toString()}.js");
-    return out.readAsStringSync();
+    File out = new File("$fname.js");
+    try {
+      return out.readAsStringSync();
+    } catch(_) {
+      return "window.alert('Your code is wrong.');";
+    }
   });
 }
 
