@@ -2,11 +2,18 @@
 <html>
   <head>
     <title></title>
+    <link rel="stylesheet" href="style/normalize-2.1.0.css">
+    <link rel="stylesheet" href="style/dabble.css">
   </head>
   <body>
-    <h1 id='name'></h1>
-    <iframe id="render-area"></iframe>
-<script type="application/dart" src="live.dart"></script>
-<script src="/packages/browser/dart.js"></script>
-</body>
+    <div class="d-bar-live">
+      <h1 class="d-bar-title" id="d-title"></h1>
+      <h2 class="share-link" id="share-link"><a href="#" target="_blank"></a></h2>
+      <button class="d-bar-button right" on-click="clear()">Clear</button>
+      <button class="d-bar-button right" on-click="save()">Save</button>
+    </div>
+    <iframe class="render-area" id="render-area"></iframe>
+    <script type="application/dart" src="live.dart"></script>
+    <script src="/packages/browser/dart.js"></script>
+  </body>
 </html>

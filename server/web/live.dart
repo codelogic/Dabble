@@ -43,7 +43,13 @@ void tryLoadPreviouslySavedDabble(String id) {
 
 void renderData(DabbleData data) {
   print("let's render!");
-  query('#name').text = data.name == null ? "" : data.name;
+  query('#d-title').text = data.name == null ? "" : data.name;
+  
+  var a = (query("#share-link a") as AnchorElement);
+  a.text = "/view/" + currentDabble.id;
+  String host = window.location.host;
+  a.href = "http://$host/view/${currentDabble.id}";
+  
   var render = new Renderer();
   String result = render.render(markup: data.markup, style: data.style, code: data.code);
 

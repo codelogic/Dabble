@@ -37,8 +37,13 @@ void deferedMain() {
 
   tryLoadPreviouslySavedDabble();
 
-  watch(() => title, (_) => saveTimer.reset());
-  watch(() => description, (_) => saveTimer.reset());
+  watch(() => title, (_) => dabbleMetaChanged());
+  watch(() => description, (_) => dabbleMetaChanged());
+}
+
+void dabbleMetaChanged() {
+  query("#d-title").text = title;
+  saveTimer.reset();
 }
 
 Future<ADabble> createNewDabble() {
@@ -52,6 +57,13 @@ ADabble registerListener(ADabble dabble) {
     localApi.onUpdate(dabble.id).listen(renderData);
   }
   return dabble;
+}
+
+void updateShareLink() {
+  var a = (query("#share-link a") as AnchorElement);
+  a.text = "/view/" + currentDabble.id;
+  String host = window.location.host;
+  a.href = "http://$host/view/${currentDabble.id}";
 }
 
 void tryLoadPreviouslySavedDabble() {
@@ -89,9 +101,8 @@ void populateEditorsWithLoadedData(DabbleData data) {
 
 void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
   localApi.insertNewVersion(dabble.id, newData);
+  updateShareLink();
   dabble.current = newData;
-  String host = window.location.host;
-  query("#status").text = "http://$host/view/${dabble.id}";
 }
 
 void renderData(DabbleData data) {
