@@ -135,6 +135,7 @@ a:hover, a:active {
 
 #d-name {
   display: inline-block;
+  float: left;
   font-size: 14px;
   font-weight: bold;
   color: #4e575b;
@@ -142,6 +143,7 @@ a:hover, a:active {
   min-width: 120px;
   width: auto;
   margin-top: 9px;
+  margin-left: 10px;
   border: none;
 }
 

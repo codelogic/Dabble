@@ -1,6 +1,7 @@
 library dabble.core;
 
 import 'dart:async';
+import 'dart:crypto';
 import 'dart:json' as JSON;
 import 'dart:math' as math;
 

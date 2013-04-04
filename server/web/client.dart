@@ -1,6 +1,7 @@
 library dabble.client;
 
 import 'dart:async';
+import 'dart:crypto';
 import 'dart:indexed_db';
 import 'package:serialization/serialization.dart';
 import 'package:lawndart/lawndart.dart';

@@ -49,14 +49,16 @@ void render(HttpConnect connect) {
   var dabble = getDabble(id);
   var data = dabble.current;
   var render = new Renderer();
-  String result = render.render(markup: data.markup, style: data.style, code: data.code);
-  try {
-    connect.response..headers.contentType = new ContentType.fromString("text/html")
-    ..write(result);
-    connect.close();
-  } catch(e) {
-    print("socket error. Render Result.");
-  }
+
+  render.render(markup: data.markup, style: data.style, code: data.code).then((result) {
+    try {
+      connect.response..headers.contentType = new ContentType.fromString("text/html")
+      ..write(result);
+      connect.close();
+    } catch(e) {
+      print("socket error. Render Result.");
+    }
+  });
 }
 
 void forwardLive(HttpConnect connect) {
@@ -150,17 +152,49 @@ doUpdate(String id, String body, HttpConnect connect) {
   connect.request.response.done.catchError((e) => print("Error sending response $e"));
   DabbleData data = DabbleData.revive(body);
   ADabble dabble = getDabble(id);
-  dabble.current = data;
-  _data[id] = dabble;
-  notifyUpdate(id, data);
-  try {
-  HttpResponse resp = connect.response;
-  resp..headers.contentType = new ContentType.fromString("text/json")
+
+  compileDart(data).then((compiledData) {
+    try {
+      dabble.current = compiledData;
+      _data[id] = dabble;
+      notifyUpdate(id, compiledData);
+      HttpResponse resp = connect.response;
+      resp..headers.contentType = new ContentType.fromString("text/json")
       ..write(JSON.stringify(""));
-  connect.close();
-  } catch(e) {
-    print("doUpdate error");
+      connect.close();
+    } catch(e) {
+      print("doUpdate error");
+    }
+  });
+}
+
+Future<DabbleData> compileDart(DabbleData data) {
+  if (data.code.language != 'dart') {
+    return new Future.immediate(data);
   }
+  return compile(data.code.rawText).then((compiled) {
+    data.code.compiledText = compiled;
+    return data;
+  });
+}
+
+
+Future<String> compile(String rawText) {
+  var exec = new Options().executable;
+  var dir = path.dirname(exec);
+  File tmp = new File("${dir}/tmp.dart");
+  return tmp.writeAsString(rawText).then((f) {
+    var p = f.path.toString();
+    print(p);
+    return Process.start("$dir/dart2js",
+        ["-o$p.js", p]).then((p) {
+      return p.stdout.transform(new StringDecoder()).toList()
+          .then((data) => data.join(''));
+    });
+  }).then((_) {
+    File out = new File("${tmp.path.toString()}.js");
+    return out.readAsStringSync();
+  });
 }
 
 doCreate(String body, HttpConnect connect) {
