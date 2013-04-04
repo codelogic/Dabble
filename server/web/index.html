@@ -31,23 +31,34 @@
 
     <textarea id="d-description" bind-value="description" placeholder="Enter a description..."></textarea>
 
+    <div class="d-editor-bar">
+      <h1 class="d-bar-title">Html</h1>
+    </div>
     <div class="d-editor">
       <x-dabble-editor id="markupEditor" editorstyle="{{'editor'}}" mode="ace/mode/html"></x-dabble-editor>
       <div class="d-language">Markup</div>
     </div>
     
+    <div class="d-editor-bar">
+      <h1 class="d-bar-title">Css</h1>
+    </div>
     <div class="d-editor">
       <x-dabble-editor id="styleEditor" editorstyle="{{'editor'}}" mode="ace/mode/css"></x-dabble-editor>
       <div class="d-language">Style</div>
     </div>
 
-    <p><select id="language" on-change="updateLanguage($event);"><option value="js">Javascript</option><option value="dart">Dart</option></select></p>
+    <div class="d-editor-bar">
+      <select id="language" on-change="updateLanguage($event);"><option value="js">Javascript</option><option value="dart">Dart</option></select>
+    </div>
     <div class="d-editor">
       <x-dabble-editor id="codeEditor" editorstyle="{{'editor'}}" mode="ace/mode/javascript"></x-dabble-editor>
       <div class="d-language">Code</div>
     </div>
-    <p>Render area</p>
-    <iframe class="render-area" id="render-area"></iframe>
+    
+    <div class="d-editor-bar">
+      <h1 class="d-bar-title">Render View</h1>
+    </div>
+    <iframe class="d-render-area" id="render-area"></iframe>
     
     <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script type="application/dart" src="dabble.dart"></script>

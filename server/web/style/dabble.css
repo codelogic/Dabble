@@ -97,10 +97,27 @@ a:hover, a:active {
 
 .d-editor {
   width: 960px;
-  margin: 20px auto 0;
+  margin: 0 auto;
   border: 3px solid #e5e5e5;
-  border-radius: 3px;
+  border-radius: 0 0 3px 3px;
   position: relative;
+}
+
+.d-editor-bar {
+  height: 43px;
+  border: 1px solid #e5e5e5;
+  border-width: 3px 3px 0 3px;
+  border-radius: 3px 3px 0 0;
+  width: 960px;
+  margin: 10px auto 0;
+  background: #f1f1f1;
+  background: -webkit-gradient(radial,100 36,0,100 -40,120,from(#fafafa),to(#f1f1f1)),#f1f1f1;
+}
+
+.d-editor-bar select {
+  margin-left: 10px;
+  margin-top: 9px;
+  font-size: 20px;
 }
 
 .d-language {
@@ -169,7 +186,16 @@ a:hover, a:active {
   color: #4e575b;
 }
 
-.render-area {
+.d-render-area {
+  width: 960px;
+  height: 400px;
+  border: 3px solid #e5e5e5;
+  border-radius: 0 0 3px 3px;
+  margin: 0 auto 40px;
+  display: block;
+}
+
+.live .render-area {
   width: 960px;
   height: 400px;
   border: 3px solid #e5e5e5;
