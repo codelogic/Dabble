@@ -44,33 +44,44 @@ void main() {
 Map<String, StreamController<DabbleData>> _map = new Map();
 
 void render(HttpConnect connect) {
+  connect.request.response.done.catchError((e) => print("Error sending response $e"));
   var id = connect.dataset['id'];
   var dabble = getDabble(id);
   var data = dabble.current;
   var render = new Renderer();
   String result = render.render(markup: data.markup, style: data.style, code: data.code);
-  connect.response..headers.contentType = new ContentType.fromString("text/html")
-  ..write(result);
-  connect.close();
+  try {
+    connect.response..headers.contentType = new ContentType.fromString("text/html")
+    ..write(result);
+    connect.close();
+  } catch(e) {
+    print("socket error. Render Result.");
+  }
 }
 
 void forwardLive(HttpConnect connect) {
+  connect.request.response.done.catchError((e) => print("Error sending response $e"));
   HttpResponse resp = connect.response;
   var file = connect.dataset['file'];
   var ext = connect.dataset['ext'];
-  resp..headers.add(HttpHeaders.LOCATION, '/$file.$ext')
-      ..statusCode = 302;;
-      connect.close();
+  try {
+    resp..headers.add(HttpHeaders.LOCATION, '/$file.$ext')
+        ..statusCode = 302;;
+        connect.close();
+  } catch(e) {
+    print("socket error. Forward Live.");
+  }
 }
 
 void ws(HttpConnect connect) {
+  connect.request.response.done.catchError((e) => print("Error sending response $e"));
   String id = connect.dataset['id'];
   WebSocketTransformer.upgrade(connect.request).then((WebSocket websocket) {
     print("Got websocket connection!");
     var sub = getStream(id).stream.listen((DabbleData data) {
       try {
         websocket.send(data.serialize());
-      } catch(e) {
+      } catch(_) {
         print("socket error.");
         sub.cancel();
       }
@@ -97,27 +108,32 @@ StreamController<DabbleData> getStream(String id) {
 Map<String, ADabble> _data = new Map();
 
 void api(HttpConnect connect) {
-  print(connect);
-  HttpRequest req = connect.request;
-  String id = connect.dataset['id'];
-  if (req.method == 'POST') {
-    if (id != null && id != "") {
-      _readBody(req, (body) { doUpdate(id, body, connect); });
-    } else {
-      _readBody(req, (body) { doCreate(body, connect); });
-    }
-  } else if (req.method == 'GET') {
-    HttpResponse resp = connect.response;
-    resp..headers.contentType = new ContentType.fromString("text/json")
-        ..write(getDabble(id).serialize());
-    connect.close();
-  } else if (req.method == 'DELETE') {
-    _data[id] = null;
-    HttpResponse resp = connect.response;
-    resp..headers.contentType = new ContentType.fromString("text/json")
-    ..write(JSON.stringify(""));
-    connect.close();
-  } 
+  try {
+    connect.request.response.done.catchError((e) => print("Error sending response $e"));
+    print(connect);
+    HttpRequest req = connect.request;
+    String id = connect.dataset['id'];
+    if (req.method == 'POST') {
+      if (id != null && id != "") {
+        _readBody(req, (body) { doUpdate(id, body, connect); });
+      } else {
+        _readBody(req, (body) { doCreate(body, connect); });
+      }
+    } else if (req.method == 'GET') {
+      HttpResponse resp = connect.response;
+      resp..headers.contentType = new ContentType.fromString("text/json")
+          ..write(getDabble(id).serialize());
+      connect.close();
+    } else if (req.method == 'DELETE') {
+      _data[id] = null;
+      HttpResponse resp = connect.response;
+      resp..headers.contentType = new ContentType.fromString("text/json")
+      ..write(JSON.stringify(""));
+      connect.close();
+    } 
+  }catch(e) {
+    print("Lazy....");
+  }
 }
 
 ADabble getDabble(String id) {
@@ -131,18 +147,24 @@ ADabble getDabble(String id) {
 }
 
 doUpdate(String id, String body, HttpConnect connect) {
+  connect.request.response.done.catchError((e) => print("Error sending response $e"));
   DabbleData data = DabbleData.revive(body);
   ADabble dabble = getDabble(id);
   dabble.current = data;
   _data[id] = dabble;
   notifyUpdate(id, data);
+  try {
   HttpResponse resp = connect.response;
   resp..headers.contentType = new ContentType.fromString("text/json")
       ..write(JSON.stringify(""));
   connect.close();
+  } catch(e) {
+    print("doUpdate error");
+  }
 }
 
 doCreate(String body, HttpConnect connect) {
+  connect.request.response.done.catchError((e) => print("Error sending response $e"));
   print("body: $body");
   var options = JSON.parse(body);
   String owner = options['owner'] == null ? options['owner'] : 'anonymous';
@@ -156,10 +178,14 @@ doCreate(String body, HttpConnect connect) {
   ADabble dabble = new ADabble(makeDabbleId(), owner);  
   _data[dabble.id] = dabble;
   print(dabble.id);
-  HttpResponse resp = connect.response;
-  resp..headers.contentType = new ContentType.fromString("text/json")
-      ..write(dabble.serialize());
-  connect.close();
+  try {
+    HttpResponse resp = connect.response;
+    resp..headers.contentType = new ContentType.fromString("text/json")
+        ..write(dabble.serialize());
+    connect.close();
+  } catch(e) {
+    print("doCreate");
+  }
 }
 
 // TODO: make this not stupid
@@ -177,9 +203,14 @@ String makeDabbleId() {
 
 // Read body of [request] and call [handleBody] when complete.
 _readBody(HttpRequest request, void handleBody(String body)) {
-  request.transform(new StringDecoder()).toList().then((data) {
-    var body = data.join('');
-    print(body);
-    handleBody(body);
-  });
+  try {
+    request.response.done.catchError((e) => print("Error sending response $e"));
+    request.transform(new StringDecoder()).toList().then((data) {
+      var body = data.join('');
+      print(body);
+      handleBody(body);
+    });
+  } catch(e) {
+    print("_readBody");
+  }
 }

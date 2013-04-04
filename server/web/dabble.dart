@@ -108,6 +108,7 @@ void populateEditorsWithLoadedData(DabbleData data) {
     markupEditor.editorvalue = data.markup.rawText;
     styleEditor.editorvalue = data.style.rawText;
     codeEditor.editorvalue = data.code.rawText;
+    language = data.code.language;
   }
 }
 
