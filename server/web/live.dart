@@ -48,16 +48,14 @@ void renderData(DabbleData data) {
   var a = (query("#share-link a") as AnchorElement);
   a.text = "/view/" + currentDabble.id;
   String host = window.location.host;
-  a.href = "http://$host/view/${currentDabble.id}";
+  var id = currentDabble.id;
+  a.href = "http://$host/view/${id}";
   
-  var render = new Renderer();
-  String result = render.render(markup: data.markup, style: data.style, code: data.code);
-
-  (query("#render-area") as IFrameElement).srcdoc = result;
+  (query("#render-area") as IFrameElement).src = "/_i/$id";
 }
 
 void clearRenderer() {
-  (query("#render-area") as IFrameElement).srcdoc = "";
+  (query("#render-area") as IFrameElement).src = "";
 }
 
 void refresh() {

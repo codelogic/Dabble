@@ -13,6 +13,7 @@ void main() {
      '/index.html_bootstrap.dart.js.deps': '/out/index.html_bootstrap.dart.js.deps',
      '/index.html_bootstrap.dart.js.map': '/out/index.html_bootstrap.dart.js.map',
      '/view/(file:.*)\\.(ext:.*)': forwardLive,
+     '/_i/(file:.*)\\.(ext:.*)': forwardLive,
      '/live.dart.js': '/out/live.dart.js',
      '/live.dart.js.deps': '/out/live.dart.js.deps',
      '/live.dart.js.map': '/out/live.dart.js.map',
@@ -32,6 +33,7 @@ void main() {
      '/_/(id:.*)': api,
      '/ws/(id:.*)': ws,
      '/view/(id:.*)': '/out/live.html',
+     '/_i/(id:.*)': render,
   };
 
   new StreamServer(uriMapping: map)
@@ -40,6 +42,17 @@ void main() {
 }
 
 Map<String, StreamController<DabbleData>> _map = new Map();
+
+void render(HttpConnect connect) {
+  var id = connect.dataset['id'];
+  var dabble = getDabble(id);
+  var data = dabble.current;
+  var render = new Renderer();
+  String result = render.render(markup: data.markup, style: data.style, code: data.code);
+  connect.response..headers.contentType = new ContentType.fromString("text/html")
+  ..write(result);
+  connect.close();
+}
 
 void forwardLive(HttpConnect connect) {
   HttpResponse resp = connect.response;
