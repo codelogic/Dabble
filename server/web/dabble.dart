@@ -13,12 +13,6 @@ import 'editorComponent.dart';
 const TIMEOUT = const Duration(seconds: 1);
 
 @observable
-String htmlInput = "";
-@observable
-String cssInput = "";
-@observable
-String jsInput = "";
-@observable
 String title = "";
 @observable
 String description = "";
