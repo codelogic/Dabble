@@ -16,12 +16,14 @@
   </head>
   <body>
     <div class="title-bar">
-      <h1 class="google">Google</h1>
-      <h2 class="title">Dabble</h2>
+      <div class="title-items">
+        <h1 class="google">Google</h1>
+        <h2 class="title">Dabble</h2>
+      </div>
     </div>
 
     <div class="d-bar">
-      <input id="d-name" bind-value="title" placeholder="title...">
+      <input id="d-name" bind-value="title" placeholder="Title...">
       <h2 class="share-link" id="share-link"><a href="#" target="_blank"></a></h2>
       <button class="d-bar-button right" on-click="clear()">Clear</button>
       <button class="d-bar-button right" on-click="save()">Save</button>
@@ -29,19 +31,20 @@
 
     <textarea id="d-description" bind-value="description" placeholder="Enter a description..."></textarea>
 
-    <p>Html</p>
     <div class="d-editor">
       <x-dabble-editor id="markupEditor" editorstyle="{{'editor'}}" mode="ace/mode/html"></x-dabble-editor>
+      <div class="d-language">Markup</div>
     </div>
     
-    <p>Css</p>
     <div class="d-editor">
       <x-dabble-editor id="styleEditor" editorstyle="{{'editor'}}" mode="ace/mode/css"></x-dabble-editor>
+      <div class="d-language">Style</div>
     </div>
 
     <p><select id="language" on-change="updateLanguage($event);"><option value="js">Javascript</option><option value="dart">Dart</option></select></p>
     <div class="d-editor">
       <x-dabble-editor id="codeEditor" editorstyle="{{'editor'}}" mode="ace/mode/javascript"></x-dabble-editor>
+      <div class="d-language">Code</div>
     </div>
     <p>Render area</p>
     <iframe class="render-area" id="render-area"></iframe>

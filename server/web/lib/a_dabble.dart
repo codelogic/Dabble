@@ -25,8 +25,11 @@ class ADabble {
   }
 
   static ADabble revive(String serialized) {
-    var json = JSON.parse(serialized);
     ADabble dabble = new ADabble.blank();
+    if(serialized == null || serialized == "")
+      return dabble;
+    
+    var json = JSON.parse(serialized);
     dabble.id = json['id'];
     dabble.owner = json['owner'];
     dabble.urlName = json['urlName'];
