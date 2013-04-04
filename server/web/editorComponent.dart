@@ -5,7 +5,7 @@ class EditorComponent extends WebComponent {
   String _editorValue = "";
   String editorstyle;
   String mode = "ace/mode/javascript";
-  String theme = "ace/theme/monokai";
+  String theme = "ace/theme/GitHub";
   var editor;
   inserted() {
     js.scoped(() {
