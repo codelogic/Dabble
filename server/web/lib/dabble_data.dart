@@ -5,25 +5,47 @@ part of dabble.core;
  * raw text blobs.
  */
 class DabbleData {
-  String name;
-  String description;
-  String dabbleId;
+  String name = "";
+  String description = "";
+  String dabbleId = "";
 
-  LanguageData markup;
-  LanguageData style;
-  LanguageData code;
+  LanguageData markup = new LanguageData();
+  LanguageData style = new LanguageData();
+  LanguageData code = new LanguageData();
 
   DabbleData();
 
   String serialize() {
-    return JSON.stringify(makeSerializer(this).write(this));
+    return JSON.stringify(this.toJson());
+  }
+
+  toJson() {
+    Map json = new Map();
+    json['name'] = this.name;
+    json['description'] = this.description;
+    json['dabbleId'] = this.dabbleId;
+    json['markup'] = this.markup == null ? new Map() : this.markup.toJson();
+    json['style'] = this.style == null ? new Map() : this.style.toJson();
+    json['code'] = this.code == null ? new Map() : this.code.toJson();
+    return json;
   }
 
   static DabbleData revive(String serialized) {
-    return makeSerializer().read(JSON.parse(serialized));
+    var json = JSON.parse(serialized);
+    return fromJson(json);
   }
-
-  static Serialization makeSerializer([DabbleData data]) {
-    return new Serialization()..addRuleFor((data == null ? new DabbleData() : data));
+  
+  static DabbleData fromJson(json) {
+    DabbleData data = new DabbleData();
+    if (json == null) {
+      return data;
+    }
+    data.name = json['name'];
+    data.description = json['description'];
+    data.dabbleId = json['dabbleId'];
+    data.markup = LanguageData.fromJson(json['markup']);
+    data.style = LanguageData.fromJson(json['style']);
+    data.code = LanguageData.fromJson(json['code']);
+    return data;
   }
 }

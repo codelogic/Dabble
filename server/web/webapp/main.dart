@@ -5,11 +5,17 @@ void main() {
      '/': '/out/index.html',
      '/dabble.dart': '/out/dabble.dart',
      '/dabble.dart.map': '/out/dabble.dart.map',
+     '/dabble.dart.js': '/out/dabble.dart.js',
+     '/dabble.dart.js.deps': '/out/dabble.dart.js.deps',
+     '/dabble.dart.js.map': '/out/dabble.dart.js.map',
      '/index.html_bootstrap.dart': '/out/index.html_bootstrap.dart',
      '/index.html_bootstrap.dart.js': '/out/index.html_bootstrap.dart.js',
      '/index.html_bootstrap.dart.js.deps': '/out/index.html_bootstrap.dart.js.deps',
      '/index.html_bootstrap.dart.js.map': '/out/index.html_bootstrap.dart.js.map',
-     '/view/(file:.*).dart': forwardLive,
+     '/view/(file:.*)\\.(ext:.*)': forwardLive,
+     '/live.dart.js': '/out/live.dart.js',
+     '/live.dart.js.deps': '/out/live.dart.js.deps',
+     '/live.dart.js.map': '/out/live.dart.js.map',
      '/live.dart': '/out/live.dart',
      '/live.dart.map': '/out/live.dart.map',
      '/live.html_bootstrap.dart': '/out/live.html_bootstrap.dart',
@@ -28,7 +34,9 @@ void main() {
      '/view/(id:.*)': '/out/live.html',
   };
 
-  new StreamServer(uriMapping: map).start();
+  new StreamServer(uriMapping: map)
+      ..host = '0.0.0.0'
+      ..start();
 }
 
 Map<String, StreamController<DabbleData>> _map = new Map();
@@ -36,7 +44,8 @@ Map<String, StreamController<DabbleData>> _map = new Map();
 void forwardLive(HttpConnect connect) {
   HttpResponse resp = connect.response;
   var file = connect.dataset['file'];
-  resp..headers.add(HttpHeaders.LOCATION, '/$file.dart')
+  var ext = connect.dataset['ext'];
+  resp..headers.add(HttpHeaders.LOCATION, '/$file.$ext')
       ..statusCode = 302;;
       connect.close();
 }
