@@ -11,6 +11,8 @@ const TIMEOUT = const Duration(seconds: 1);
 
 RemoteDabbleApi api = new RemoteDabbleApi();
 ADabble currentDabble = null;
+bool autoreload = true;
+StreamSubscription listenHandler = null;
 
 void main() {
   Timer.run(() => deferedMain());
@@ -22,10 +24,24 @@ void deferedMain() {
   String id = path.substring(path.lastIndexOf("/") + 1);
   print("id is $id");
   tryLoadPreviouslySavedDabble(id);
+  watch(() => autoreload, (_) => updateAutoReload());
+}
+
+void updateAutoReload() {
+  if(autoreload) {
+    if(listenHandler == null) {
+      listenHandler = api.onUpdate(currentDabble.id).listen(renderData);
+    }
+  } else {
+    if(listenHandler != null) {
+      listenHandler.unsubscribe();
+      listenHandler == null;
+    }
+  }
 }
 
 ADabble registerListener(ADabble dabble) {
-  api.onUpdate(dabble.id).listen(renderData);
+  listenHandler = api.onUpdate(dabble.id).listen(renderData);
   return dabble;
 }
 
