@@ -27,15 +27,18 @@ void main() {
   watch(() => htmlInput, (_) => saveTimer.reset());
   watch(() => cssInput, (_) => saveTimer.reset());
   watch(() => jsInput, (_) => saveTimer.reset());
+  watch(() => title, (_) => saveTimer.reset());
+  watch(() => description, (_) => saveTimer.reset());
 }
 
 Future<ADabble> createNewDabble() {
-  return api.createNewDabble();
+  return api.createNewDabble().then((dabble) => currentDabble = dabble);
 }
 
 void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
     api.insertNewVersion(dabble.id, newData);
 
+    query("#status").text = "http://localhost:8080/anon/${dabble.id}";
     // TODO: move this to occur on an api event.
     renderData(newData);
 }
