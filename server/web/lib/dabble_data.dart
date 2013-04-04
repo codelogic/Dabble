@@ -14,4 +14,16 @@ class DabbleData {
   LanguageData code;
 
   DabbleData();
+
+  String serialize() {
+    return JSON.stringify(makeSerializer(this).write(this));
+  }
+
+  static DabbleData revive(String serialized) {
+    return makeSerializer().read(JSON.parse(serialized));
+  }
+
+  static Serialization makeSerializer([DabbleData data]) {
+    return new Serialization()..addRuleFor((data == null ? new DabbleData() : data));
+  }
 }

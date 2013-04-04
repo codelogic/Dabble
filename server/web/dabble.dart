@@ -19,7 +19,7 @@ String description = "";
 
 ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
-LocalDabbleApi localApi = new LocalDabbleApi();
+LocalDabbleApi localApi = new LocalDabbleApi(new RemoteDabbleApi());
 ADabble currentDabble = null;
 
 EditorComponent markupEditor;

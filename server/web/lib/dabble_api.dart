@@ -11,7 +11,7 @@ abstract class DabbleApi {
   Future deleteDabble(String dabbleId);
 
   /** update a dabble via [dabbleId] instance with [newData] */
-  Future<ADabble> insertNewVersion(String dabbleId, DabbleData newData);
+  void insertNewVersion(String dabbleId, DabbleData newData);
 
   /* when a particular dabble is updated */
   Stream<DabbleData> onUpdate(String dabbleId);
