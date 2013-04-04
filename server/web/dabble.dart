@@ -2,27 +2,35 @@ library dabble.client.dabble;
 
 import 'dart:html';
 import 'dart:async';
-import 'package:web_ui/watcher.dart';
+import 'dart:json';
+import 'package:web_ui/web_ui.dart';
 import 'client.dart';
 import 'lib/core.dart';
 import 'reset-timer.dart';
 
 const TIMEOUT = const Duration(seconds: 1);
 
+@observable
 String htmlInput = "";
+@observable
 String cssInput = "";
+@observable
 String jsInput = "";
+@observable
 String title = "";
+@observable
 String description = "";
 
 ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
-DabbleApi api = new DabbleApiImpl(new RemoteDabbleApi());
+LocalDabbleApi localApi = new LocalDabbleApi();
 ADabble currentDabble = null;
 
 void main() {
   query("#save")
     .onClick.listen((_) => save());
+
+  tryLoadPreviouslySavedDabble();
 
   watch(() => htmlInput, (_) => saveTimer.reset());
   watch(() => cssInput, (_) => saveTimer.reset());
@@ -32,15 +40,43 @@ void main() {
 }
 
 Future<ADabble> createNewDabble() {
-  return api.createNewDabble().then((dabble) => currentDabble = dabble);
+  return localApi.createNewDabble().then((dabble) => currentDabble = dabble);
+}
+
+void tryLoadPreviouslySavedDabble() {
+  localApi.lastSavedDabbleId()
+    .then((id) {
+      if(id != null && id != "") {
+        localApi.getDabble(id)
+          .then((dabble) => currentDabble = dabble)
+          .then((dabble) => populateEditorsWithLoadedData(dabble.current));
+      }
+
+      print("Id loaded: ${id}");
+    });
+}
+
+void populateEditorsWithLoadedData(DabbleData data) {
+  print("Populating data");
+  print("name: " + data.name);
+  print("description: " + data.description);
+  print("name: " + data.markup.rawText);
+  print("markup: " + data.style.rawText);
+  print("code: " + data.code.rawText);
+  title = data.name;
+  description = data.description;
+  htmlInput = data.markup.rawText;
+  cssInput = data.style.rawText;
+  jsInput = data.code.rawText;
 }
 
 void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
-    api.insertNewVersion(dabble.id, newData);
+  localApi.insertNewVersion(dabble.id, newData);
 
-    query("#status").text = "http://localhost:8080/anon/${dabble.id}";
-    // TODO: move this to occur on an api event.
-    renderData(newData);
+  query("#status").text = "http://localhost:8080/anon/${dabble.id}";
+
+  // TODO: move this to occur on an api event.
+  renderData(newData);
 }
 
 void renderData(DabbleData data) {
@@ -51,13 +87,11 @@ void renderData(DabbleData data) {
 }
 
 void save() {
-  var data = compileDabbleData();
-
   if (currentDabble == null) {
     createNewDabble()
-      .then((dabble) => updatedDabbleWithData(dabble, data));
+      .then((dabble) => updatedDabbleWithData(dabble, compileDabbleData()));
   } else {
-    updatedDabbleWithData(currentDabble, data);
+    updatedDabbleWithData(currentDabble, compileDabbleData());
   }
 }
 
@@ -65,30 +99,39 @@ DabbleData compileDabbleData() {
   String name = (query("#d-name") as InputElement).value;
   String description = (query("#d-description") as TextAreaElement).value;
 
-  DabbleData previous = currentDabble == null ? null : currentDabble.current;
+  String dabbleId = currentDabble == null ? null : currentDabble.id;
 
-  DabbleData data = new DabbleData(
-      name,
-      description,
-      previous,
-      markupLanguageData(),
-      styleLanguageData(),
-      appLanguageData());
+  DabbleData data = new DabbleData()
+      ..name = name
+      ..description = description
+      ..dabbleId = dabbleId
+      ..markup = markupLanguageData()
+      ..style = styleLanguageData()
+      ..code = appLanguageData();
 
   return data;
 }
 
-LanguageData markupLanguageData() => new LanguageData(
-      "html",
-      htmlInput,
-      {});
+LanguageData markupLanguageData() {
+  LanguageData data = new LanguageData()
+    ..language = "html"
+    ..rawText = htmlInput
+    ..options = {};
+  return data;
+}
 
-LanguageData styleLanguageData() => new LanguageData(
-      "css",
-      cssInput,
-      {});
+LanguageData styleLanguageData() {
+  LanguageData data = new LanguageData()
+    ..language = "css"
+    ..rawText = cssInput
+    ..options = {};
+  return data;
+}
 
-LanguageData appLanguageData() => new LanguageData(
-      "js",
-      jsInput,
-      {});
+LanguageData appLanguageData() {
+  LanguageData data = new LanguageData()
+    ..language = "js"
+    ..rawText = jsInput
+    ..options = {};
+  return data;
+}

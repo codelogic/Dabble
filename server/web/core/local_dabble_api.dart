@@ -1,16 +1,23 @@
 part of dabble.client;
 
-class DabbleApiImpl extends DabbleApi {
+class LocalDabbleApi extends DabbleApi {
   Store store;
   DabbleApi remoteApi;
-  DabbleApiImpl([DabbleApi this.remoteApi]) {
+  LocalDabbleApi([DabbleApi this.remoteApi]) {
     if (IdbFactory.supported) {
       this.store = new IndexedDbStore('dabble', 'dabble');
+      print("Using IndexDbStore");
     } else if (SqlDatabase.supported) {
       this.store = new WebSqlStore('dabble', 'dabble');
+      print("Using WebSqlStore");
     } else {
       this.store = new MemoryStore();
+      print("Using MemoryStore");
     }
+  }
+
+  Future<String> lastSavedDabbleId() {
+    return store.open().then((_) => store.getByKey("lastSavedDabbleId"));
   }
 
   /* create a persistant dabble instance populated with an id */
@@ -24,7 +31,9 @@ class DabbleApiImpl extends DabbleApi {
 
   Future<ADabble> doSave(ADabble dabble) {
     return store.open()
-        .then((_)  => store.save(dabble.serialize(), dabble.id))
+        .then((_) => store.save(dabble.serialize(), dabble.id))
+        .then((_) => store.save(dabble.id, "lastSavedDabbleId"))
+        .then((_) => print("doSave: " + dabble.id))
         .then((_) => dabble);
   }
 
@@ -40,7 +49,7 @@ class DabbleApiImpl extends DabbleApi {
     } while (random > 0);
     return dabbleId;
   }
-  
+
   /* delete a dabble by passing in the id */
   @override
   Future deleteDabble(String dabbleId) {
