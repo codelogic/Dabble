@@ -4,11 +4,10 @@ import 'dart:async';
 import 'dart:io';
 
 void main() {
-  int websocketPort = 8000;
-  int regularPort = 8080;
-  HttpServer.bind('127.0.0.1', websocketPort)
+  int port = 8000;
+  HttpServer.bind('127.0.0.1', port)
     .then((HttpServer server) {
-      print('listening for connections on $websocketPort');
+      print('listening for connections on $port');
       
       var wsh = new WebSocketHandler();
       var sc = new StreamController();
@@ -18,21 +17,17 @@ void main() {
 
       server.listen((HttpRequest request) {
         if (request.uri.path == '/ws') {
-          sc.add(request);
+          /* sc.add(request); */
+          String text = createHtmlResponse();
+          request.response.headers.set(HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
+          request.response.write(text);
+          request.response.close();
         } else {
           /* ... */
         }
       });
     },
     onError: (error) => print("Error starting HTTP server: $error"));
-  
-  HttpServer.bind('127.0.0.1', regularPort)
-  .then((HttpServer server) {
-    print('listening for connections on $regularPort');
-
-    server.listen(requestReceivedHandler);
-  },
-  onError: (error) => print("Error starting HTTP server: $error"));
 }
 
 class WebSocketHandler {
@@ -57,31 +52,20 @@ class WebSocketHandler {
   }
 }
 
-void requestReceivedHandler(HttpRequest request) {
-  request.response.headers.set(
-      HttpHeaders.CONTENT_TYPE, "text/html; charset=UTF-8");
-  String text;
-  if (request.uri.path == '/render') {
-    /* text = createHtmlResponse(); */
-    text = '''rendering''';
-  } else if (request.uri.path == '/save') {
-    text = '''saving''';
-  } else {
-    text = '''unknown command''';
-  }
-  request.response.write(text);
-  request.response.close();
-}
-
 String createHtmlResponse() {
   return
 '''
 <html>
-  
+  <style>
+    body { background-color: teal; }
+    p { background-color: white; border-radius: 8px;
+        border:solid 1px #555; text-align: center; padding: 0.5em;
+        font-family: "Lucida Grande", Tahoma; font-size: 18px; color: #555; }
+  </style>
   <body>
-    ${new DateTime.now()}
+    <br/><br/>
+    <p>Current time: ${new DateTime.now()}</p>
   </body>
 </html>
-
 ''';
 }

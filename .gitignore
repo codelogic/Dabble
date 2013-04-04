@@ -1,2 +1,6 @@
 packages/
 client/out/
+server/web/out/
+.DS_store
+.buildlog
+pubspec.lock

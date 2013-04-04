@@ -8,31 +8,35 @@
     <link rel="stylesheet" href="style/dabble.css">
   </head>
   <body>
-    <h1>Dabble</h1>
-    
+
+    <div class="title-bar">
+      <h1 class="google">Google</h1>
+      <h2 class="title">Dabble</h2>
+    </div>
+
     <p>Hello world from Dart!</p>
-    
-    <input id="d-name" placeholder="name...">
-    <textarea id="d-description" placeholder="Enter a description..."></textarea>
-    
+
+    <input id="d-name" bind-value="title" placeholder="name...">
+    <textarea id="d-description" bind-value="description" placeholder="Enter a description..."></textarea>
+
     <p>Html</p>
     <textarea id="htmlinput"
       placeholder="Write html here..." bind-value="htmlInput"></textarea>
-    
+
     <p>Css</p>
     <textarea id="cssinput"
       placeholder="Write css here..." bind-value="cssInput"></textarea>
-    
+
     <p>Javascript</p>
     <textarea id="jsinput"
       placeholder="Write javascript here..." bind-value="jsInput"></textarea>
-    
+
     <p><button id="render">Render everything now</button>
     <button id="save">Save Stuff</button></p>
-    
+
     <p>Render area</p>
     <iframe id="render-area"></iframe>
-    
+
     <script type="application/dart" src="dabble.dart"></script>
     <script src="packages/browser/dart.js"></script>
   </body>

@@ -1,10 +1,12 @@
-name: dabble
+name: dabble_server
 version: 0.0.1
-description: A sample web application
+description: Dabble's server
 dependencies:
   lawndart: any
   stream: any
   serialization: any
   browser: any
-  web_ui: any
-  pathos: any
+
+#dependencies:
+#  js: any
+#  unittest: any
