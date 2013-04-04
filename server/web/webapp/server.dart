@@ -31,6 +31,7 @@ doCreate(String body, HttpConnect connect) {
   print("body: $body");
   var options = JSON.parse(body);
   String owner = options['owner'] == null ? options['owner'] : 'anonymous';
+  ////////******VIKTOR**********//////////
   ADabble dabble = new ADabble(makeDabbleId(), owner);  
   print(dabble.id);
   HttpResponse resp = connect.response;
