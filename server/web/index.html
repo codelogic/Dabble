@@ -21,16 +21,12 @@
     </div>
 
     <div class="d-bar">
-      <h1 class="d-bar-title" id="d-title"></h1>
+      <input id="d-name" bind-value="title" placeholder="title...">
       <h2 class="share-link" id="share-link"><a href="#" target="_blank"></a></h2>
       <button class="d-bar-button right" on-click="clear()">Clear</button>
       <button class="d-bar-button right" on-click="save()">Save</button>
     </div>
-    
 
-    <p id="status">Hello world from Dart!</p>
-
-    <input id="d-name" bind-value="title" placeholder="name...">
     <textarea id="d-description" bind-value="description" placeholder="Enter a description..."></textarea>
 
     <p>Html</p>

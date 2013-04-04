@@ -115,6 +115,18 @@ a:hover, a:active {
   padding-left: 20px;
 }
 
+#d-name {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #4e575b;
+  background-color: transparent;
+  min-width: 120px;
+  width: auto;
+  margin-top: 9px;
+  border: none;
+}
+
 .share-link {
   padding-left: 10px;
 }

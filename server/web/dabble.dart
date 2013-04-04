@@ -41,13 +41,8 @@ void deferedMain() {
   styleEditor.stream.listen((String data) => saveTimer.reset());
   codeEditor.stream.listen((String data) => saveTimer.reset());
 
-  watch(() => title, (_) => dabbleMetaChanged());
-  watch(() => description, (_) => dabbleMetaChanged());
-}
-
-void dabbleMetaChanged() {
-  query("#d-title").text = title;
-  saveTimer.reset();
+  watch(() => title, (_) => saveTimer.reset());
+  watch(() => description, (_) => saveTimer.reset());
 }
 
 Future<ADabble> createNewDabble() {
