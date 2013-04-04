@@ -9,6 +9,14 @@ void main() {
      '/index.html_bootstrap.dart.js': '/out/index.html_bootstrap.dart.js',
      '/index.html_bootstrap.dart.js.deps': '/out/index.html_bootstrap.dart.js.deps',
      '/index.html_bootstrap.dart.js.map': '/out/index.html_bootstrap.dart.js.map',
+     '/view/(file:.*).dart': forwardLive,
+     '/live.dart': '/out/live.dart',
+     '/live.dart.map': '/out/live.dart.map',
+     '/live.html_bootstrap.dart': '/out/live.html_bootstrap.dart',
+     '/live.html_bootstrap.dart.js': '/out/live.html_bootstrap.dart.js',
+     '/live.html_bootstrap.dart.js.deps': '/out/live.html_bootstrap.dart.js.deps',
+     '/live.html_bootstrap.dart.js.map': '/out/live.html_bootstrap.dart.js.map',
+     '/editorComponent.html': '/out/editorComponent.html',
      '/editorComponent.dart': '/out/editorComponent.dart',
      '/editorComponent.dart.map': '/out/editorComponent.dart.map',
      '/editorComponent.html_bootstrap.dart': '/out/editorComponent.html_bootstrap.dart',
@@ -17,13 +25,21 @@ void main() {
      '/editorComponent.html_bootstrap.dart.js.map': '/out/editorComponent.html_bootstrap.dart.js.map',
      '/_/(id:.*)': api,
      '/ws/(id:.*)': ws,
-     '/view/(id:.*)': live,
+     '/view/(id:.*)': '/out/live.html',
   };
 
   new StreamServer(uriMapping: map).start();
 }
 
 Map<String, StreamController<DabbleData>> _map = new Map();
+
+void forwardLive(HttpConnect connect) {
+  HttpResponse resp = connect.response;
+  var file = connect.dataset['file'];
+  resp..headers.add(HttpHeaders.LOCATION, '/$file.dart')
+      ..statusCode = 302;;
+      connect.close();
+}
 
 void ws(HttpConnect connect) {
   String id = connect.dataset['id'];

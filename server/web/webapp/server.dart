@@ -8,5 +8,4 @@ import "dart:json" as JSON;
 import "../lib/core.dart";
 
 part 'main.dart';
-part 'live.rsp.dart'; //auto-inject from server/web/live.rsp.html
 

@@ -1,10 +1,10 @@
 import 'dart:html';
 import 'dart:async';
 import 'dart:json';
+import 'package:js/js.dart' as js;
 import 'package:web_ui/web_ui.dart';
 import 'client.dart';
 import 'lib/core.dart';
-import 'package:js/js.dart' as js;
 import 'reset-timer.dart';
 
 const TIMEOUT = const Duration(seconds: 1);
@@ -43,7 +43,7 @@ void tryLoadPreviouslySavedDabble(String id) {
 
 void renderData(DabbleData data) {
   print("let's render!");
-  query('#name').text = data.name;
+  query('#name').text = data.name == null ? "" : data.name;
   var render = new Renderer();
   String result = render.render(markup: data.markup, style: data.style, code: data.code);
 
