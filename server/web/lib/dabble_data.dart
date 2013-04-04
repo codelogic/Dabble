@@ -5,18 +5,13 @@ part of dabble.core;
  * raw text blobs.
  */
 class DabbleData {
-  final String name;
-  final String description;
-  final DabbleData parent;
-  
-  final LanguageData markup;
-  final LanguageData style;
-  final LanguageData code;
-  
-  DabbleData(String this.name,
-      String this.description,
-      DabbleData this.parent,
-      LanguageData this.markup,
-      LanguageData this.style,
-      LanguageData this.code);
+  String name;
+  String description;
+  String dabbleId;
+
+  LanguageData markup;
+  LanguageData style;
+  LanguageData code;
+
+  DabbleData();
 }

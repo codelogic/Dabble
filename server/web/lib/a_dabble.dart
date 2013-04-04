@@ -1,15 +1,15 @@
 part of dabble.core;
 
 class ADabble {
-  final String id;
-  final String owner;
-  
+  String id;
+  String owner;
+
   String urlName;
   DabbleData current;
-  
+
   ADabble(String this.id, String this.owner);
 
-  ADabble.forSerialization(String this.id, String this.owner);
+  ADabble.blank();
 
   String serialize() {
     return JSON.stringify(makeSerializer(this).write(this));
@@ -22,7 +22,7 @@ class ADabble {
   static Serialization makeSerializer([ADabble dabble]) {
     return new Serialization()
         ..addRuleFor((dabble == null ? new ADabble("", "") : dabble),
-            constructor: "forSerialization",
+            constructor: "",
             constructorFields: ["id", "owner"]);
   }
 }
