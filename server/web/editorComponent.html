@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <style>
+      .editorContainer {
+        width: 800px;
+        height: 300px;
+      }
+    </style>
+    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  <element name="x-dabble-editor" constructor="EditorComponent" extends="div">
+    <template>
+      <div id="editorContainer"><div id="editor"></div></div>
+    </template>
+    <script type="application/dart" src="editorComponent.dart">
+    </script>
+  </element>
+  <div is="x-dabble-editor" id="editor2" editorstyle="{{'editorContainer'}}"></div>
+  <script type="application/dart">
+    void main() {}
+  </script>
+</body></html>

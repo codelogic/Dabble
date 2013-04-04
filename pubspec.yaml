@@ -6,3 +6,5 @@ dependencies:
   serialization: any
   browser: any
   web_ui: any
+  js:
+    hosted: js

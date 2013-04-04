@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:web_ui/watcher.dart';
 import 'client.dart';
 import 'lib/core.dart';
+import 'package:js/js.dart' as js;
 
 const TIMEOUT = const Duration(seconds: 1);
 
@@ -16,6 +17,7 @@ String description = "";
 
 ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
+var editor;
 void main() {
   foo();
   query("#save")
@@ -62,10 +64,15 @@ LanguageData styleLanguageData() => new LanguageData(
       cssInput,
       {});
 
-LanguageData appLanguageData() => new LanguageData(
+LanguageData appLanguageData() { 
+  js.scoped(() {
+    jsInput = editor.getSession().getValue();
+  });
+  return new LanguageData(
       "js",
       jsInput,
       {});
+}
 
 foo() {
   DabbleApi api = new DabbleApiImpl();
