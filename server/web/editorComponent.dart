@@ -1,11 +1,14 @@
 import 'package:web_ui/web_ui.dart';
 import 'package:js/js.dart' as js;
+import 'dart:async';
 
 class EditorComponent extends WebComponent {
   String _editorValue = "";
   String editorstyle;
   String mode = "ace/mode/javascript";
   String theme = "ace/theme/monokai";
+  StreamController<String> valueStreamController = new StreamController.broadcast();
+
   var editor;
   inserted() {
     js.scoped(() {
@@ -15,6 +18,12 @@ class EditorComponent extends WebComponent {
       editor.setTheme(theme);
       editor.getSession().setMode(mode);
       editor.getSession().setValue(_editorValue);
+      editor.on("change", new js.Callback.many((_) {
+        js.scoped(() {
+          _editorValue = editor.getSession().getValue();
+          valueStreamController.sink.add(_editorValue);
+        });
+      }));
       if (editorstyle != null) {
         editor.setStyle(editorstyle);
         _root.query("#editorContainer").classes.add(editorstyle);
@@ -33,5 +42,7 @@ class EditorComponent extends WebComponent {
     });
     return _editorValue;
   }
+  
+  Stream<String> get stream => valueStreamController.stream;
 }
 
