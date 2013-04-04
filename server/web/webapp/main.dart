@@ -65,7 +65,13 @@ void api(HttpConnect connect) {
     resp..headers.contentType = new ContentType.fromString("text/json")
         ..write(getDabble(id).serialize());
     connect.close();
-  }
+  } else if (req.method == 'DELETE') {
+    _data[id] = null;
+    HttpResponse resp = connect.response;
+    resp..headers.contentType = new ContentType.fromString("text/json")
+    ..write(JSON.stringify(""));
+    connect.close();
+  } 
 }
 
 ADabble getDabble(String id) {

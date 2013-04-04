@@ -29,10 +29,16 @@ class RemoteDabbleApi extends DabbleApi {
 
   @override
   void insertNewVersion(String dabbleId, DabbleData newData) {
-    var completer = new Completer<ADabble>();
     var xhr = new HttpRequest();
     xhr.open('POST', '/_/$dabbleId', async: true);
     xhr.send(newData.serialize());
+  }
+
+  @override
+  void deleteDabble(String dabbleId) {
+    var xhr = new HttpRequest();
+    xhr.open('DELETE', '/_/$dabbleId', async: true);
+    xhr.send("");
   }
 
   @override
