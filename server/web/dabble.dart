@@ -72,8 +72,8 @@ void updateLanguage(Event event) {
 void updateShareLink() {
   var a = (query("#share-link a") as AnchorElement);
   if (currentDabble.id != null) {
-    a.text = "/view/" + currentDabble.id;
     String host = window.location.host;
+    a.text = "http://$host/view/${currentDabble.id}";
     a.href = "http://$host/view/${currentDabble.id}";
   }
 }

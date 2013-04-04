@@ -203,3 +203,8 @@ a:hover, a:active {
   margin: 20px auto 40px;
   display: block;
 }
+
+.d-bar-content {
+  width: 960px;
+  margin: 0 auto;
+}
