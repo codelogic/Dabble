@@ -5,7 +5,7 @@ import 'dart:async';
 class EditorComponent extends WebComponent {
   String _editorValue = "";
   String editorstyle;
-  String mode = "ace/mode/javascript";
+  String _mode = "ace/mode/javascript";
   String theme = "ace/theme/GitHub";
   StreamController<String> valueStreamController = new StreamController.broadcast();
 
@@ -16,7 +16,7 @@ class EditorComponent extends WebComponent {
       var node = _root.query("#editor");
       editor = new js.Proxy(ace.edit, node);
       editor.setTheme(theme);
-      editor.getSession().setMode(mode);
+      editor.getSession().setMode(_mode);
       editor.getSession().setValue(_editorValue);
       editor.on("change", new js.Callback.many((_) {
         js.scoped(() {
@@ -30,6 +30,15 @@ class EditorComponent extends WebComponent {
       }
       js.retain(editor);
     });
+  }
+
+  set mode(String mode) {
+    _mode = mode;
+    if (editor != null) {
+      js.scoped(() {
+        editor.getSession().setMode(_mode);
+      });
+    }
   }
 
   set editorvalue(String value) {

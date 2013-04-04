@@ -16,6 +16,7 @@ const TIMEOUT = const Duration(seconds: 1);
 String title = "";
 @observable
 String description = "";
+String language = "js";
 
 ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
@@ -56,6 +57,16 @@ ADabble registerListener(ADabble dabble) {
     localApi.onUpdate(dabble.id).listen(renderData);
   }
   return dabble;
+}
+
+// TODO(tsander): Move into editor component...
+void updateLanguage(Event event) {
+  language = event.target.value;
+  if (language == "js") {
+    codeEditor.mode = "ace/mode/javascript";
+  } else if(language == "dart") {
+    codeEditor.mode = "ace/mode/dart";
+  }
 }
 
 void updateShareLink() {
@@ -178,7 +189,7 @@ LanguageData styleLanguageData() {
 
 LanguageData codeLanguageData() {
   LanguageData data = new LanguageData()
-    ..language = "js"
+    ..language = language
     ..rawText = codeEditor.editorvalue
     ..options = {};
   return data;

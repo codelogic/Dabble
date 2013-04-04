@@ -39,7 +39,7 @@
       <x-dabble-editor id="styleEditor" editorstyle="{{'editor'}}" mode="ace/mode/css"></x-dabble-editor>
     </div>
 
-    <p>Javascript</p>
+    <p><select id="language" on-change="updateLanguage($event);"><option value="js">Javascript</option><option value="dart">Dart</option></select></p>
     <div class="d-editor">
       <x-dabble-editor id="codeEditor" editorstyle="{{'editor'}}" mode="ace/mode/javascript"></x-dabble-editor>
     </div>
