@@ -54,10 +54,16 @@ a:hover, a:active {
 }
 
 .title-bar {
-  background-color: #fff;
-  border-bottom: 1px solid #d0d0d0;
+  background-color: #404040;
+  border-bottom: 1px solid #303030;
   height: 62px;
-  padding-left: 32px;
+  padding-top: 3px;
+}
+
+.title-items {
+  width: 960px;
+  margin: 0 auto;
+  display: block;
 }
 
 .d-box, .d-editor {
@@ -94,6 +100,18 @@ a:hover, a:active {
   margin: 20px auto 0;
   border: 3px solid #e5e5e5;
   border-radius: 3px;
+  position: relative;
+}
+
+.d-language {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: rgba(0,0,0,0.1);
+  font-size: 50px;
+  line-height: 75px;
+  padding-right: 15px;
+  text-transform: uppercase;
 }
 
 .d-bar-live {
@@ -137,11 +155,23 @@ a:hover, a:active {
   text-decoration: none;
 }
 
+#d-description {
+  height: 100px;
+  border: 3px solid #e5e5e5;
+  border-radius: 3px;
+  width: 960px;
+  margin: 10px auto 0;
+  background: #ffffff;
+  display: block;
+  padding: 5px 10px;
+  color: #4e575b;
+}
+
 .render-area {
   width: 960px;
   height: 400px;
   border: 3px solid #e5e5e5;
   border-radius: 3px;
-  margin: 20px auto 0;
+  margin: 20px auto 40px;
   display: block;
 }
