@@ -21,6 +21,13 @@ class RemoteDabbleApi extends DabbleApi {
   }
 
   @override
+  Future<ADabble> getDabble(String id) {
+    return HttpRequest.getString('/_/$id').then((e) {
+      return ADabble.revive(e);
+    });
+  }
+
+  @override
   void insertNewVersion(String dabbleId, DabbleData newData) {
     var completer = new Completer<ADabble>();
     var xhr = new HttpRequest();
