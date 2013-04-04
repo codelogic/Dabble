@@ -12,17 +12,25 @@ class ADabble {
   ADabble.blank();
 
   String serialize() {
-    return JSON.stringify(makeSerializer(this).write(this));
+    return JSON.stringify(this.toJson());
+  }
+
+  toJson() {
+    Map json = new Map();
+    json['id'] = this.id;
+    json['owner'] = this.owner;
+    json['urlName'] = this.urlName;
+    json['current'] = this.current == null ? new Map() : this.current.toJson();
+    return json;
   }
 
   static ADabble revive(String serialized) {
-    return makeSerializer().read(JSON.parse(serialized));
-  }
-
-  static Serialization makeSerializer([ADabble dabble]) {
-    return new Serialization()
-        ..addRuleFor((dabble == null ? new ADabble("", "") : dabble),
-            constructor: "",
-            constructorFields: ["id", "owner"]);
+    var json = JSON.parse(serialized);
+    ADabble dabble = new ADabble.blank();
+    dabble.id = json['id'];
+    dabble.owner = json['owner'];
+    dabble.urlName = json['urlName'];
+    dabble.current = DabbleData.fromJson(json['current']);
+    return dabble;
   }
 }

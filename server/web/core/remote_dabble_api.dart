@@ -19,4 +19,38 @@ class RemoteDabbleApi extends DabbleApi {
     });
     return completer.future;
   }
+
+  @override
+  Future<ADabble> getDabble(String id) {
+    return HttpRequest.getString('/_/$id').then((e) {
+      return ADabble.revive(e);
+    });
+  }
+
+  @override
+  void insertNewVersion(String dabbleId, DabbleData newData) {
+    var xhr = new HttpRequest();
+    xhr.open('POST', '/_/$dabbleId', async: true);
+    xhr.send(newData.serialize());
+  }
+
+  @override
+  void deleteDabble(String dabbleId) {
+    var xhr = new HttpRequest();
+    xhr.open('DELETE', '/_/$dabbleId', async: true);
+    xhr.send("");
+  }
+
+  @override
+  Stream<DabbleData> onUpdate(String dabbleId) {
+    print("let's try to connect!");
+    Location location = window.location;
+    String host = location.host;
+    String port = location.port;
+    WebSocket ws = new WebSocket('ws://$host/ws/$dabbleId');
+    return ws.onMessage.transform(new StreamTransformer<MessageEvent, DabbleData>(
+        handleData: (MessageEvent value, EventSink<DabbleData> sink) {
+          sink.add(DabbleData.revive(value.data));
+        }));
+  }
 }

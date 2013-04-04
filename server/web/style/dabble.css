@@ -1,10 +1,16 @@
+/* apply a natural box layout model to all elements */
+* { 
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
 
 body {
-  background-color: #F8F8F8;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.2em;
+  background-color: #FFFFFF;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 13px;
+  color: #222222;
+  line-height: 18px;
   margin: 0px;
 }
 
@@ -39,20 +45,47 @@ body {
   padding-left: 32px;
 }
 
-h1, p {
-  color: #333;
+.d-box, .d-editor {
+  width: 960px;
 }
 
-#sample_container_id {
-  width: 100%;
+.d-bar {
+  height: 46px;
+  border: 3px solid #e5e5e5;
+  border-radius: 3px;
+  width: 960px;
+  margin: 20px auto 0;
+  background: #f1f1f1;
+  background: -webkit-gradient(radial,100 36,0,100 -40,120,from(#fafafa),to(#f1f1f1)),#f1f1f1;
+}
+
+.d-bar-button {
+  height: 40px;
+  min-width: 40px;
+  background: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: #303030;
+  border: none;
+}
+
+.d-bar-button.right {
+  float: right;
+  border-left: 1px solid #e5e5e5;
+}
+
+.d-editor {
+  width: 960px;
+  margin: 20px auto 0;
+  border: 3px solid #e5e5e5;
+  border-radius: 3px;
+}
+
+.render-area {
+  width: 960px;
   height: 400px;
-  position: relative;
-  border: 1px solid #ccc;
-  background-color: #fff;
-}
-
-#sample_text_id {
-  font-size: 24pt;
-  text-align: center;
-  margin-top: 140px;
+  border: 3px solid #e5e5e5;
+  border-radius: 3px;
+  margin: 20px auto 0;
+  display: block;
 }

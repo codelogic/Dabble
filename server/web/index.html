@@ -9,8 +9,8 @@
     <link rel="components" href="editorComponent.html">
     <style>
       .editor {
-        width: 1000px;
-        height: 100px;
+        width: 954px;
+        height: 300px;
       }
     </style>
   </head>
@@ -20,8 +20,11 @@
       <h2 class="title">Dabble</h2>
     </div>
 
-    <button on-click="clear()">Clear</button>
-    <button on-click="save()">Save</button>
+    <div class="d-bar">
+      <button class="d-bar-button right" on-click="clear()">Clear</button>
+      <button class="d-bar-button right" on-click="save()">Save</button>
+    </div>
+    
 
     <p id="status">Hello world from Dart!</p>
 
@@ -29,16 +32,21 @@
     <textarea id="d-description" bind-value="description" placeholder="Enter a description..."></textarea>
 
     <p>Html</p>
-    <x-dabble-editor id="markupEditor" editorstyle="{{'editor'}}" mode="ace/mode/html"></x-dabble-editor>
-
+    <div class="d-editor">
+      <x-dabble-editor id="markupEditor" editorstyle="{{'editor'}}" mode="ace/mode/html"></x-dabble-editor>
+    </div>
+    
     <p>Css</p>
-    <x-dabble-editor id="styleEditor" editorstyle="{{'editor'}}" mode="ace/mode/css"></x-dabble-editor>
+    <div class="d-editor">
+      <x-dabble-editor id="styleEditor" editorstyle="{{'editor'}}" mode="ace/mode/css"></x-dabble-editor>
+    </div>
 
     <p>Javascript</p>
-    <x-dabble-editor id="codeEditor" editorstyle="{{'editor'}}" mode="ace/mode/javascript"></x-dabble-editor>
-
+    <div class="d-editor">
+      <x-dabble-editor id="codeEditor" editorstyle="{{'editor'}}" mode="ace/mode/javascript"></x-dabble-editor>
+    </div>
     <p>Render area</p>
-    <iframe id="render-area"></iframe>
+    <iframe class="render-area" id="render-area"></iframe>
     
     <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script type="application/dart" src="dabble.dart"></script>

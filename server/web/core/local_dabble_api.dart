@@ -28,14 +28,7 @@ class LocalDabbleApi extends DabbleApi {
     if (remoteApi == null) {
       return doSave(new ADabble(makeDabbleId(), owner));
     }
-    return remoteApi.createNewDabble(owner: owner).then((dabble) {
-      remoteApi.onUpdate(dabble.id).listen(
-          (data) => notifyUpdate(dabble.id, data),
-          () {},
-          () {},
-          true);
-      return dabble;
-    }).then(doSave);
+    return remoteApi.createNewDabble(owner: owner).then(doSave);
   }
 
   Future<ADabble> doSave(ADabble dabble) {
@@ -74,9 +67,10 @@ class LocalDabbleApi extends DabbleApi {
 
   /* update a dabble instance itself */
   @override
-  Future<ADabble> insertNewVersion(String dabbleId, DabbleData newData) {
+  void insertNewVersion(String dabbleId, DabbleData newData) {
+    remoteApi.insertNewVersion(dabbleId, newData);
     notifyUpdate(dabbleId, newData);
-    return getDabble(dabbleId).then((ADabble dabble) {
+    getDabble(dabbleId).then((ADabble dabble) {
       if (dabble == null) { return null; }
       dabble.current = newData;
       return doSave(dabble);
@@ -98,6 +92,11 @@ class LocalDabbleApi extends DabbleApi {
     if (!scMap.containsKey(dabbleId)) {
       print("Creating stream for $dabbleId");
       scMap[dabbleId] = new StreamController<DabbleData>.broadcast();
+      if (remoteApi != null) {
+        remoteApi.onUpdate(dabbleId).listen((DabbleData data) {
+          notifyUpdate(dabbleId, data);
+       });
+      }
     }
     return scMap[dabbleId].stream;
   }
