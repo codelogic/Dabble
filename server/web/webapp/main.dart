@@ -48,10 +48,11 @@ void render(HttpConnect connect) {
   var dabble = getDabble(id);
   var data = dabble.current;
   var render = new Renderer();
-  String result = render.render(markup: data.markup, style: data.style, code: data.code);
-  connect.response..headers.contentType = new ContentType.fromString("text/html")
-  ..write(result);
-  connect.close();
+  render.render(markup: data.markup, style: data.style, code: data.code).then((result) {
+    connect.response..headers.contentType = new ContentType.fromString("text/html")
+    ..write(result);
+    connect.close();
+  });
 }
 
 void forwardLive(HttpConnect connect) {
@@ -133,13 +134,44 @@ ADabble getDabble(String id) {
 doUpdate(String id, String body, HttpConnect connect) {
   DabbleData data = DabbleData.revive(body);
   ADabble dabble = getDabble(id);
-  dabble.current = data;
-  _data[id] = dabble;
-  notifyUpdate(id, data);
-  HttpResponse resp = connect.response;
-  resp..headers.contentType = new ContentType.fromString("text/json")
-      ..write(JSON.stringify(""));
-  connect.close();
+  compileDart(data).then((compiledData) {
+    dabble.current = compiledData;
+    _data[id] = dabble;
+    notifyUpdate(id, compiledData);
+    HttpResponse resp = connect.response;
+    resp..headers.contentType = new ContentType.fromString("text/json")
+    ..write(JSON.stringify(""));
+    connect.close();
+  });
+}
+
+Future<DabbleData> compileDart(DabbleData data) {
+  if (data.code.language != 'dart') {
+    return new Future.immediate(data);
+  }
+  return compile(data.code.rawText).then((compiled) {
+    data.code.compiledText = compiled;
+    return data;
+  });
+}
+
+
+Future<String> compile(String rawText) {
+  var exec = new Options().executable;
+  var dir = path.dirname(exec);
+  File tmp = new File("${dir}/tmp.dart");
+  return tmp.writeAsString(rawText).then((f) {
+    var p = f.path.toString();
+    print(p);
+    return Process.start("$dir/dart2js",
+        ["-o$p.js", p]).then((p) {
+      return p.stdout.transform(new StringDecoder()).toList()
+          .then((data) => data.join(''));
+    });
+  }).then((_) {
+    File out = new File("${tmp.path.toString()}.js");
+    return out.readAsStringSync();
+  });
 }
 
 doCreate(String body, HttpConnect connect) {

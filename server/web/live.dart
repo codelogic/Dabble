@@ -51,7 +51,8 @@ void renderData(DabbleData data) {
   var id = currentDabble.id;
   a.href = "http://$host/view/${id}";
   
-  (query("#render-area") as IFrameElement).src = "/_i/$id";
+  (query("#render-area") as IFrameElement).src =
+      new Renderer().render(markup: data.markup, style: data.style, code: data.code);
 }
 
 void clearRenderer() {

@@ -7,6 +7,7 @@ part of dabble.core;
 class LanguageData {
   String language = "";
   String rawText = "";
+  String compiledText = "";
   Map<String, Object> options = new Map();
 
   String serialize() {
@@ -17,6 +18,7 @@ class LanguageData {
     Map json = new Map();
     json['language'] = this.language;
     json['rawText'] = this.rawText;
+    json['compiledText'] = this.compiledText;
     json['options'] = this.options;
     return json;
   }
@@ -33,6 +35,7 @@ class LanguageData {
     }
     data.language = json.containsKey('language') ? json['language'] : '';
     data.rawText =  json.containsKey('rawText') ? json['rawText'] : '';
+    data.compiledText =  json.containsKey('compiledText') ? json['compiledText'] : '';
     data.options = json.containsKey('options') ? json['options'] : new Map();
     return data;
   }
