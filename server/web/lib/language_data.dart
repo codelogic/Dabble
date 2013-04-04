@@ -5,11 +5,7 @@ part of dabble.core;
  * and rendering options for this language blob.
  */
 class LanguageData {
-  final String language;
-  final String rawText;
-  final Map<String, Object> options;
-  
-  LanguageData(String this.language,
-      String this.rawText,
-      Map<String, Object> this.options);
+  String language;
+  String rawText;
+  Map<String, Object> options;
 }
