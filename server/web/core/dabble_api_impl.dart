@@ -2,7 +2,8 @@ part of dabble.client;
 
 class DabbleApiImpl extends DabbleApi {
   Store store;
-  DabbleApiImpl() {
+  DabbleApi remoteApi;
+  DabbleApiImpl([DabbleApi this.remoteApi]) {
     if (IdbFactory.supported) {
       this.store = new IndexedDbStore('dabble', 'dabble');
     } else if (SqlDatabase.supported) {
@@ -15,7 +16,10 @@ class DabbleApiImpl extends DabbleApi {
   /* create a persistant dabble instance populated with an id */
   @override
   Future<ADabble> createNewDabble({owner: 'anonymous'}) {
-    return doSave(new ADabble(makeDabbleId(), owner));
+    if (remoteApi == null) {
+      return doSave(new ADabble(makeDabbleId(), owner));
+    }
+    return remoteApi.createNewDabble(owner: owner).then(doSave);
   }
 
   Future<ADabble> doSave(ADabble dabble) {

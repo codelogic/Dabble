@@ -17,7 +17,7 @@ String description = "";
 
 ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
-DabbleApi api = new DabbleApiImpl();
+DabbleApi api = new DabbleApiImpl(new RemoteDabbleApi());
 ADabble currentDabble = null;
 
 void main() {
