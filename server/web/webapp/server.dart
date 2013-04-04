@@ -32,6 +32,12 @@ doCreate(String body, HttpConnect connect) {
   var options = JSON.parse(body);
   String owner = options['owner'] == null ? options['owner'] : 'anonymous';
   ////////******VIKTOR**********//////////
+  /* 
+   * 1.Construct JSON request
+   * 2.Send request to the cloud (http://dadabble.appspot.com/dabbleapi)
+   * 3. receive JSON response (id) and parse it
+   * 4. instantiate the Dabble object 
+   */
   ADabble dabble = new ADabble(makeDabbleId(), owner);  
   print(dabble.id);
   HttpResponse resp = connect.response;
