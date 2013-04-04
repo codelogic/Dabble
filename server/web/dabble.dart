@@ -22,7 +22,7 @@ ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 LocalDabbleApi localApi = new LocalDabbleApi();
 ADabble currentDabble = null;
 
-EditorComponent domEditor;
+EditorComponent markupEditor;
 EditorComponent styleEditor;
 EditorComponent codeEditor;
 
@@ -31,7 +31,7 @@ void main() {
 }
 
 void deferedMain() {
-  domEditor = (query("#domEditor").xtag as EditorComponent);
+  markupEditor = (query("#markupEditor").xtag as EditorComponent);
   styleEditor = (query("#styleEditor").xtag as EditorComponent);
   codeEditor = (query("#codeEditor").xtag as EditorComponent);
 
@@ -81,7 +81,7 @@ void populateEditorsWithLoadedData(DabbleData data) {
     print("code: " + data.code.rawText);
     title = data.name;
     description = data.description;
-    domEditor.editorvalue = data.markup.rawText;
+    markupEditor.editorvalue = data.markup.rawText;
     styleEditor.editorvalue = data.style.rawText;
     codeEditor.editorvalue = data.code.rawText;
   }
@@ -119,9 +119,9 @@ void clear() {
   createNewDabble();
   title = "";
   description = "";
-  htmlInput = "";
-  cssInput = "";
-  jsInput = "";
+  markupEditor.editorvalue = "";
+  styleEditor.editorvalue = "";
+  codeEditor.editorvalue = "";
   clearRenderer();
   print("clearing");
 }
@@ -153,7 +153,7 @@ DabbleData compileDabbleData() {
 LanguageData markupLanguageData() {
   LanguageData data = new LanguageData()
     ..language = "html"
-    ..rawText = domEditor.editorvalue
+    ..rawText = markupEditor.editorvalue
     ..options = {};
   return data;
 }
