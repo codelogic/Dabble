@@ -6,3 +6,4 @@ dependencies:
   serialization: any
   browser: any
   web_ui: any
+  pathos: any
