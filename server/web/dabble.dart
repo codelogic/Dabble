@@ -28,9 +28,6 @@ LocalDabbleApi localApi = new LocalDabbleApi();
 ADabble currentDabble = null;
 
 void main() {
-  query("#save")
-    .onClick.listen((_) => save());
-
   tryLoadPreviouslySavedDabble();
 
   watch(() => htmlInput, (_) => saveTimer.reset());
@@ -73,6 +70,7 @@ void populateEditorsWithLoadedData(DabbleData data) {
 
 void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
   localApi.insertNewVersion(dabble.id, newData);
+  dabble.current = newData;
 
   query("#status").text = "http://localhost:8080/anon/${dabble.id}";
 
@@ -87,12 +85,33 @@ void renderData(DabbleData data) {
   (query("#render-area") as IFrameElement).srcdoc = result;
 }
 
+void clearRenderer() {
+  (query("#render-area") as IFrameElement).srcdoc = "";
+}
+
 void save() {
   if (currentDabble == null) {
     createNewDabble()
       .then((dabble) => updatedDabbleWithData(dabble, compileDabbleData()));
   } else {
     updatedDabbleWithData(currentDabble, compileDabbleData());
+  }
+}
+
+void clear() {
+  createNewDabble();
+  title = "";
+  description = "";
+  htmlInput = "";
+  cssInput = "";
+  jsInput = "";
+  clearRenderer();
+  print("clearing");
+}
+
+void refresh() {
+  if(currentDabble != null) {
+    renderData(currentDabble.current);
   }
 }
 
