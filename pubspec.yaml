@@ -3,8 +3,10 @@ version: 0.0.1
 description: A sample web application
 dependencies:
   lawndart: any
+  stream: any
   serialization: any
   browser: any
   web_ui: any
   js:
     hosted: js
+  pathos: any

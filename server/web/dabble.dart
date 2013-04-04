@@ -2,112 +2,138 @@ library dabble.client.dabble;
 
 import 'dart:html';
 import 'dart:async';
-import 'package:web_ui/watcher.dart';
+import 'dart:json';
+import 'package:web_ui/web_ui.dart';
 import 'client.dart';
 import 'lib/core.dart';
 import 'package:js/js.dart' as js;
+import 'reset-timer.dart';
 
 const TIMEOUT = const Duration(seconds: 1);
 
+@observable
 String htmlInput = "";
+@observable
 String cssInput = "";
+@observable
 String jsInput = "";
+@observable
 String title = "";
+@observable
 String description = "";
 
 ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 
-var editor;
+LocalDabbleApi localApi = new LocalDabbleApi();
+ADabble currentDabble = null;
+
 void main() {
-  foo();
   query("#save")
     .onClick.listen((_) => save());
+
+  tryLoadPreviouslySavedDabble();
 
   watch(() => htmlInput, (_) => saveTimer.reset());
   watch(() => cssInput, (_) => saveTimer.reset());
   watch(() => jsInput, (_) => saveTimer.reset());
+  watch(() => title, (_) => saveTimer.reset());
+  watch(() => description, (_) => saveTimer.reset());
 }
 
-void save() {
-  var data = compileDabbleData();
-  // For now, just print the description to the console.
-  print(data.description);
+Future<ADabble> createNewDabble() {
+  return localApi.createNewDabble().then((dabble) => currentDabble = dabble);
+}
+
+void tryLoadPreviouslySavedDabble() {
+  localApi.lastSavedDabbleId()
+    .then((id) {
+      if(id != null && id != "") {
+        localApi.getDabble(id)
+          .then((dabble) => currentDabble = dabble)
+          .then((dabble) => populateEditorsWithLoadedData(dabble.current));
+      }
+
+      print("Id loaded: ${id}");
+    });
+}
+
+void populateEditorsWithLoadedData(DabbleData data) {
+  print("Populating data");
+  print("name: " + data.name);
+  print("description: " + data.description);
+  print("name: " + data.markup.rawText);
+  print("markup: " + data.style.rawText);
+  print("code: " + data.code.rawText);
+  title = data.name;
+  description = data.description;
+  htmlInput = data.markup.rawText;
+  cssInput = data.style.rawText;
+  jsInput = data.code.rawText;
+}
+
+void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
+  localApi.insertNewVersion(dabble.id, newData);
+
+  query("#status").text = "http://localhost:8080/anon/${dabble.id}";
+
+  // TODO: move this to occur on an api event.
+  renderData(newData);
+}
+
+void renderData(DabbleData data) {
   var render = new Renderer();
   String result = render.render(markup: data.markup, style: data.style, code: data.code);
 
   (query("#render-area") as IFrameElement).srcdoc = result;
 }
 
+void save() {
+  if (currentDabble == null) {
+    createNewDabble()
+      .then((dabble) => updatedDabbleWithData(dabble, compileDabbleData()));
+  } else {
+    updatedDabbleWithData(currentDabble, compileDabbleData());
+  }
+}
 
 DabbleData compileDabbleData() {
   String name = (query("#d-name") as InputElement).value;
   String description = (query("#d-description") as TextAreaElement).value;
 
-  DabbleData data = new DabbleData(
-      name,
-      description,
-      null,
-      markupLanguageData(),
-      styleLanguageData(),
-      appLanguageData());
+  String dabbleId = currentDabble == null ? null : currentDabble.id;
+
+  DabbleData data = new DabbleData()
+      ..name = name
+      ..description = description
+      ..dabbleId = dabbleId
+      ..markup = markupLanguageData()
+      ..style = styleLanguageData()
+      ..code = appLanguageData();
 
   return data;
 }
 
-LanguageData markupLanguageData() => new LanguageData(
-      "html",
-      htmlInput,
-      {});
 
-LanguageData styleLanguageData() => new LanguageData(
-      "css",
-      cssInput,
-      {});
-
-LanguageData appLanguageData() { 
-  js.scoped(() {
-    jsInput = editor.getSession().getValue();
-  });
-  return new LanguageData(
-      "js",
-      jsInput,
-      {});
+LanguageData markupLanguageData() {
+  LanguageData data = new LanguageData()
+    ..language = "html"
+    ..rawText = htmlInput
+    ..options = {};
+  return data;
 }
 
-foo() {
-  DabbleApi api = new DabbleApiImpl();
-  api.createNewDabble().then((dabble) {
-    print(dabble.id);
-    api.insertNewVersion(dabble.id, new DabbleData("Dabble test",
-        "test desc",
-        null,
-        new LanguageData("html",
-        "<div/>",
-        null),
-        new LanguageData("css",
-            ".foo { color: #fff; }",
-            null),
-        new LanguageData("js",
-            "foo bar baz",
-            null))).then((dabble) { print(dabble.id);});
-  });
+LanguageData styleLanguageData() {
+  LanguageData data = new LanguageData()
+    ..language = "css"
+    ..rawText = cssInput
+    ..options = {};
+  return data;
 }
 
-class ResetTimer {
-  Timer _timer;
-  Function _callback;
-  Duration _timeout;
-
-  ResetTimer(Duration timeout, void callback()) {
-    _callback = callback;
-    _timeout = timeout;
-    reset();
-  }
-
-  void reset() {
-    if(_timer != null)
-      _timer.cancel();
-
-    _timer = new Timer(_timeout, _callback);
-  }
+LanguageData appLanguageData() {
+  LanguageData data = new LanguageData()
+    ..language = "js"
+    ..rawText = jsInput
+    ..options = {};
+  return data;
 }
