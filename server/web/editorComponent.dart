@@ -24,6 +24,9 @@ class EditorComponent extends WebComponent {
   }
 
   set editorvalue(String value) {
+    js.scoped(() {
+      editor.getSession().setValue(value);
+    });
     _editorValue = value;
   }
 

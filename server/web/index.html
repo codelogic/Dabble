@@ -29,23 +29,14 @@
     <textarea id="d-description" bind-value="description" placeholder="Enter a description..."></textarea>
 
     <p>Html</p>
-    <div is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/html" editorvalue="test"></div>
+    <div id="domEditor" is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/html"></div>
 
     <p>Css</p>
-    <div is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/css" editorvalue="test"></div>
+    <div id="styleEditor" is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/css"></div>
 
     <p>Javascript</p>
-    <div is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/javascript" editorvalue="test"></div>
+    <div id="codeEditor" is="x-dabble-editor" editorstyle="{{'editor'}}" mode="ace/mode/javascript"></div>
 
-    <p><button id="render">Render everything now</button>
-    <button id="save">Save Stuff</button></p>
-
-    <p>Render area</p>
-    <iframe id="render-area"></iframe>    
-    
-    <p><button id="render">Render everything now</button>
-    <button id="save" on-click="save()">Save Stuff</button></p>
-    
     <p>Render area</p>
     <iframe id="render-area"></iframe>
     

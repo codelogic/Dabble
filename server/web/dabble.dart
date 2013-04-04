@@ -8,6 +8,7 @@ import 'client.dart';
 import 'lib/core.dart';
 import 'package:js/js.dart' as js;
 import 'reset-timer.dart';
+import 'editorComponent.dart';
 
 const TIMEOUT = const Duration(seconds: 1);
 
@@ -27,12 +28,21 @@ ResetTimer saveTimer = new ResetTimer(TIMEOUT, save);
 LocalDabbleApi localApi = new LocalDabbleApi();
 ADabble currentDabble = null;
 
+EditorComponent domEditor;
+EditorComponent styleEditor;
+EditorComponent codeEditor;
+
 void main() {
+  Timer.run(() => deferedMain());
+}
+
+void deferedMain() {
+  domEditor = (query("#domEditor").xtag as EditorComponent);
+  styleEditor = (query("#styleEditor").xtag as EditorComponent);
+  codeEditor = (query("#codeEditor").xtag as EditorComponent);
+
   tryLoadPreviouslySavedDabble();
 
-  watch(() => htmlInput, (_) => saveTimer.reset());
-  watch(() => cssInput, (_) => saveTimer.reset());
-  watch(() => jsInput, (_) => saveTimer.reset());
   watch(() => title, (_) => saveTimer.reset());
   watch(() => description, (_) => saveTimer.reset());
 }
@@ -77,9 +87,9 @@ void populateEditorsWithLoadedData(DabbleData data) {
     print("code: " + data.code.rawText);
     title = data.name;
     description = data.description;
-    htmlInput = data.markup.rawText;
-    cssInput = data.style.rawText;
-    jsInput = data.code.rawText;
+    domEditor.editorvalue = data.markup.rawText;
+    styleEditor.editorvalue = data.style.rawText;
+    codeEditor.editorvalue = data.code.rawText;
   }
 }
 
@@ -140,7 +150,7 @@ DabbleData compileDabbleData() {
       ..dabbleId = dabbleId
       ..markup = markupLanguageData()
       ..style = styleLanguageData()
-      ..code = appLanguageData();
+      ..code = codeLanguageData();
 
   return data;
 }
@@ -149,7 +159,7 @@ DabbleData compileDabbleData() {
 LanguageData markupLanguageData() {
   LanguageData data = new LanguageData()
     ..language = "html"
-    ..rawText = htmlInput
+    ..rawText = domEditor.editorvalue
     ..options = {};
   return data;
 }
@@ -157,15 +167,15 @@ LanguageData markupLanguageData() {
 LanguageData styleLanguageData() {
   LanguageData data = new LanguageData()
     ..language = "css"
-    ..rawText = cssInput
+    ..rawText = styleEditor.editorvalue
     ..options = {};
   return data;
 }
 
-LanguageData appLanguageData() {
+LanguageData codeLanguageData() {
   LanguageData data = new LanguageData()
     ..language = "js"
-    ..rawText = jsInput
+    ..rawText = codeEditor.editorvalue
     ..options = {};
   return data;
 }
