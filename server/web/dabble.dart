@@ -39,6 +39,9 @@ void deferedMain() {
 
   watch(() => title, (_) => saveTimer.reset());
   watch(() => description, (_) => saveTimer.reset());
+  markupEditor.stream.listen((String data) => saveTimer.reset());
+  styleEditor.stream.listen((String data) => saveTimer.reset());
+  codeEditor.stream.listen((String data) => saveTimer.reset());
 }
 
 Future<ADabble> createNewDabble() {

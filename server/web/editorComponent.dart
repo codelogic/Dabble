@@ -21,7 +21,7 @@ class EditorComponent extends WebComponent {
       editor.on("change", new js.Callback.many((_) {
         js.scoped(() {
           _editorValue = editor.getSession().getValue();
-          valueStreamController.sink.add(_editorValue);
+          valueStreamController.add(_editorValue);
         });
       }));
       if (editorstyle != null) {
