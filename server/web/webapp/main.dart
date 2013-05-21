@@ -148,7 +148,7 @@ finishUpdate(String id, DabbleData data, HttpConnect connect) {
       ..write(JSON.stringify(""));
       connect.close();
     } catch(e) {
-      print("doUpdate error");
+      print("doUpdate error " + e.toString());
     }
   });
 }

@@ -120,8 +120,10 @@ void updatedDabbleWithData(ADabble dabble, DabbleData newData) {
 
 void renderData(DabbleData data) {
   print("let's render!");
-  (query("#render-area") as IFrameElement).src =
-    new Renderer().render(markup: data.markup, style: data.style, code: data.code);
+  var src = new Renderer().render(markup: data.markup, style: data.style, code: data.code);
+  if (src != (query("#render-area") as IFrameElement).src) {
+    (query("#render-area") as IFrameElement).src = src;
+  }
 }
 
 void clearRenderer() {
