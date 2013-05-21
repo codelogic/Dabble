@@ -7,13 +7,13 @@ class EditorComponent extends WebComponent {
   String editorstyle;
   String _mode = "ace/mode/javascript";
   String theme = "ace/theme/GitHub";
-  StreamController<String> valueStreamController = new StreamController.broadcast();
+  StreamController<String> valueStreamController = new StreamController();
 
   var editor;
   inserted() {
     js.scoped(() {
       var ace = js.context.ace;
-      var node = _root.query("#editor");
+      var node = shadowRoot.query("#editor");
       editor = new js.Proxy(ace.edit, node);
       editor.setTheme(theme);
       editor.getSession().setMode(_mode);
@@ -26,7 +26,7 @@ class EditorComponent extends WebComponent {
       }));
       if (editorstyle != null) {
         editor.setStyle(editorstyle);
-        _root.query("#editorContainer").classes.add(editorstyle);
+        shadowRoot.query("#editorContainer").classes.add(editorstyle);
       }
       js.retain(editor);
     });
@@ -55,6 +55,6 @@ class EditorComponent extends WebComponent {
     return _editorValue;
   }
   
-  Stream<String> get stream => valueStreamController.stream;
+  Stream<String> get stream => valueStreamController.stream.asBroadcastStream();
 }
 

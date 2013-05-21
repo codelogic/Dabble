@@ -61,11 +61,14 @@ ADabble registerListener(ADabble dabble) {
 
 // TODO(tsander): Move into editor component...
 void updateLanguage(Event event) {
-  language = event.target.value;
-  if (language == "js") {
-    codeEditor.mode = "ace/mode/javascript";
-  } else if(language == "dart") {
-    codeEditor.mode = "ace/mode/dart";
+  var eventTarget = event.target;
+  if (eventTarget is Element) {
+    language = eventTarget.value;
+    if (language == "js") {
+      codeEditor.mode = "ace/mode/javascript";
+    } else if(language == "dart") {
+      codeEditor.mode = "ace/mode/dart";
+    }
   }
 }
 

@@ -167,6 +167,7 @@ Future<DabbleData> compileDart(DabbleData data) {
 Future<String> compile(String rawText) {
   var exec = new Options().executable;
   var dir = path.dirname(exec);
+  print dir;
   var fname = "${dir}/${makeDabbleId()}.tmp.dart";
   File tmp = new File(fname);
   return tmp.writeAsString(rawText).then((f) {
