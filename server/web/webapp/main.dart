@@ -40,6 +40,7 @@ void main() {
 }
 
 Map<String, StreamController<DabbleData>> _map = new Map();
+Map<String, Stream<DabbleData>> _streams = new Map();
 
 void forwardLive(HttpConnect connect) {
   HttpResponse resp = connect.response;
@@ -59,30 +60,33 @@ void ws(HttpConnect connect) {
   String id = connect.dataset['id'];
   WebSocketTransformer.upgrade(connect.request).then((WebSocket websocket) {
     print("Got websocket connection!");
-    var sub = getStream(id).stream.listen((DabbleData data) {
-      try {
-        websocket.send(data.serialize());
-      } catch(_) {
-        print("socket error.");
-        sub.cancel();
-      }
-    });
+    // TODO: use stream transformer
+    StreamSubscription<DabbleData> subscription = getStream(id).listen((DabbleData data) {
+      websocket.add(data.serialize());
+    }, cancelOnError: true);
     StreamSubscription wsSub = websocket.listen((_) {});
-    wsSub..onDone(() {sub.cancel();})
-         ..onError((_) {sub.cancel();});
+    wsSub..onDone(() {subscription.cancel();})
+         ..onError((_) {subscription.cancel();});
   });
   connect.response.done.catchError((e) => print("Error sending response $e"));
 }
 
 void notifyUpdate(String id, DabbleData data) {
-  getStream(id).add(data);
+  getStreamController(id).add(data);
 }
 
-StreamController<DabbleData> getStream(String id) {
+StreamController<DabbleData> getStreamController(String id) {
   if (!_map.containsKey(id)) {
-    _map[id] = new StreamController.broadcast();
+    _map[id] = new StreamController();
   }
   return _map[id];
+}
+
+Stream<DabbleData> getStream(String id) {
+  if (!_streams.containsKey(id)) {
+    _streams[id] = getStreamController(id).stream.asBroadcastStream();
+  }
+  return _streams[id];
 }
 
 // Viktor....
@@ -155,7 +159,7 @@ finishUpdate(String id, DabbleData data, HttpConnect connect) {
 
 Future<DabbleData> compileDart(DabbleData data) {
   if (data.code.language != 'dart') {
-    return new Future.immediate(data);
+    return new Future.value(data);
   }
   return compile(data.code.rawText).then((compiled) {
     data.code.compiledText = compiled;

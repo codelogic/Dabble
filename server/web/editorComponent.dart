@@ -13,7 +13,7 @@ class EditorComponent extends WebComponent {
   inserted() {
     js.scoped(() {
       var ace = js.context.ace;
-      var node = shadowRoot.query("#editor");
+      var node = getShadowRoot('x-dabble-editor').query("#editor");
       editor = new js.Proxy(ace.edit, node);
       editor.setTheme(theme);
       editor.getSession().setMode(_mode);
@@ -23,11 +23,11 @@ class EditorComponent extends WebComponent {
           _editorValue = editor.getSession().getValue();
           valueStreamController.add(_editorValue);
         });
+        if (editorstyle != null) {
+          editor.setStyle(editorstyle);
+          getShadowRoot('x-dabble-editor').query("#editorContainer").classes.add(editorstyle);
+        }
       }));
-      if (editorstyle != null) {
-        editor.setStyle(editorstyle);
-        shadowRoot.query("#editorContainer").classes.add(editorstyle);
-      }
       js.retain(editor);
     });
   }

@@ -91,14 +91,14 @@ class LocalDabbleApi extends DabbleApi {
     print("on update $dabbleId");
     if (!scMap.containsKey(dabbleId)) {
       print("Creating stream for $dabbleId");
-      scMap[dabbleId] = new StreamController<DabbleData>.broadcast();
+      scMap[dabbleId] = new StreamController<DabbleData>();
       if (remoteApi != null) {
         remoteApi.onUpdate(dabbleId).listen((DabbleData data) {
           notifyUpdate(dabbleId, data);
        });
       }
     }
-    return scMap[dabbleId].stream;
+    return scMap[dabbleId].stream.asBroadcastStream();
   }
 }
 

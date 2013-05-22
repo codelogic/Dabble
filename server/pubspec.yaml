@@ -2,10 +2,12 @@ name: dabble_server
 version: 0.0.1
 description: Dabble's server
 dependencies:
-  lawndart: any
-  stream: any
-  serialization: any
   browser: any
+  lawndart: any
+  pathos: any
+  serialization: any
+  stream: any
+  web_ui: any
 
 #dependencies:
 #  js: any
