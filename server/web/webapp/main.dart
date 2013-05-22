@@ -106,13 +106,13 @@ void api(HttpConnect connect) {
       }
     } else if (req.method == 'GET') {
       HttpResponse resp = connect.response;
-      resp..headers.contentType = new ContentType.fromString("text/json")
+      resp..headers.contentType = ContentType.parse("text/json")
           ..write(getDabble(id).serialize());
       connect.close();
     } else if (req.method == 'DELETE') {
       _data[id] = null;
       HttpResponse resp = connect.response;
-      resp..headers.contentType = new ContentType.fromString("text/json")
+      resp..headers.contentType = ContentType.parse("text/json")
       ..write(JSON.stringify(""));
       connect.close();
       resp.done.catchError((e) => print("Error sending response $e"));
@@ -148,7 +148,7 @@ finishUpdate(String id, DabbleData data, HttpConnect connect) {
       _data[id] = dabble;
       notifyUpdate(id, compiledData);
       HttpResponse resp = connect.response;
-      resp..headers.contentType = new ContentType.fromString("text/json")
+      resp..headers.contentType = ContentType.parse("text/json")
       ..write(JSON.stringify(""));
       connect.close();
     } catch(e) {
@@ -208,7 +208,7 @@ doCreate(String body, HttpConnect connect) {
   print(dabble.id);
   try {
     HttpResponse resp = connect.response;
-    resp..headers.contentType = new ContentType.fromString("text/json")
+    resp..headers.contentType = ContentType.parse("text/json")
         ..write(dabble.serialize());
     connect.close();
     resp.done.catchError((e) => print("Error sending response $e"));
